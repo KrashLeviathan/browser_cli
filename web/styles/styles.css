@@ -1,0 +1,65 @@
+@import url(https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700);
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Anonymous Pro', sans-serif;
+  background-color: black;
+  font-size: x-large;
+  border: none;
+  color: #acabc2;
+  text-align: left;
+  word-break: break-all;
+  cursor: text; }
+
+*:focus {
+  outline: none; }
+
+#shell {
+  margin: 1em auto;
+  width: 44em; }
+
+@media screen and (max-width: 1080px) {
+  html, body {
+    font-size: large; } }
+@media screen and (max-width: 820px) {
+  html, body {
+    font-size: medium; } }
+@media screen and (max-width: 740px) {
+  html, body {
+    font-size: small; } }
+@media screen and (max-width: 600px) {
+  #shell {
+    margin: 1em;
+    width: 95%; } }
+.output {
+  margin-bottom: 0.5em; }
+
+.input {
+  color: #ccc8a1;
+  margin-bottom: 0.5em; }
+
+#prompt {
+  margin-right: 0.5em;
+  color: #f8f4c8;
+  font-weight: 700; }
+
+.hidden {
+  visibility: hidden; }
+
+.visible-scroll::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px; }
+.visible-scroll::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(113, 113, 113, 0.5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5); }
+
+.bordered-scroll-area {
+  height: 200px;
+  overflow-y: scroll;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 1em; }
+
+/*# sourceMappingURL=styles.css.map */
