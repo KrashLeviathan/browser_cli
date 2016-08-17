@@ -5,6 +5,7 @@ import 'dart:html';
 
 import 'package:hello_morpheus/environment_variables.dart';
 import 'package:hello_morpheus/process_manager.dart';
+import 'package:hello_morpheus/utils.dart';
 
 class PrintEnvProcessFactory extends ProcessFactory {
   static final String COMMAND = 'printenv';
@@ -22,7 +23,7 @@ class PrintEnvProcess extends Process {
     var envVars = new EnvVars().printEnv;
     var sanitizedEnvVars = [];
     envVars.forEach((str) {
-      sanitizedEnvVars.add(str.replaceAll(' ', r'&nbsp;'));
+      sanitizedEnvVars.add(str.replaceAll(' ', nonBreakingLineSpace));
     });
     var div = new DivElement();
     await div.setInnerHtml(sanitizedEnvVars.join('<br>'));

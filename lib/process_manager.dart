@@ -21,8 +21,11 @@ class ProcessManager {
   StreamController<DivElement> _outputStreamController = new StreamController();
   Stream<DivElement> get onOutput => _outputStreamController.stream;
 
-  StreamController _triggerInputStreamController = new StreamController();
-  Stream get onTriggerInput => _triggerInputStreamController.stream;
+  StreamController<bool> _triggerInputStreamController = new StreamController();
+  /// Indicates to the command line interface to get input from the user. If the value is `true`,
+  /// the input is being requested by the process. If `false`, it is handled normally by the
+  /// command line interface.
+  Stream<bool> get onTriggerInput => _triggerInputStreamController.stream;
 
   Map<String, ProcessFactory> _registeredProcessFactories = new Map();
 
@@ -42,12 +45,12 @@ class ProcessManager {
         _handleProcessOutput(id, output);
       });
       process.start().then((_) {
-        _triggerInputStreamController.add(null);
+        _triggerInputStreamController.add(false);
       });
       return true;
     } else {
       _outputStreamController.add(new DivElement()..text='$command: command not found');
-      _triggerInputStreamController.add(null);
+      _triggerInputStreamController.add(false);
       return false;
     }
   }
@@ -55,7 +58,7 @@ class ProcessManager {
   bool killProcess(int processId) {
     if (processes.keys.contains(processId) && processes[processId] != null) {
       processes[processId].kill().then((_) {
-        _triggerInputStreamController.add(null);
+        _triggerInputStreamController.add(false);
       });
       return true;
     } else {

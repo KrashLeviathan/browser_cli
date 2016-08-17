@@ -9,3 +9,4 @@ export 'package:hello_morpheus/processes/man_process.dart';
 export 'package:hello_morpheus/processes/mkdir_process.dart';
 export 'package:hello_morpheus/processes/printenv_process.dart';
 export 'package:hello_morpheus/processes/rm_process.dart';
+export 'package:hello_morpheus/processes/testinput_process.dart';

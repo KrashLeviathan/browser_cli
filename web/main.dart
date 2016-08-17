@@ -20,6 +20,7 @@ _registerProcesses() {
     new ManProcessFactory(),
     new MkdirProcessFactory(),
     new PrintEnvProcessFactory(),
-    new RmProcessFactory()
+    new RmProcessFactory(),
+    new TestInputProcessFactory()
   ]);
 }
