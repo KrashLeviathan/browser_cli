@@ -78,7 +78,9 @@ _registerProcesses() {
 
 ## Style your CLI
 
-Here are some of the id and class names used by browser_cli:
+You can use the default stylings provided with the package, or
+you can make your own! Here are some of the id and class names
+used by browser_cli:
 
 ### id
 
