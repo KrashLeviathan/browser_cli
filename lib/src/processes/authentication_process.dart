@@ -29,8 +29,8 @@ class AuthenticationProcess extends Process {
     // TODO: Actually need to do something
     /*
     [1] 48817
-    [nathankarasch@mac hello_morpheus]$ kill -9 48817
-    [nathankarasch@mac hello_morpheus]$
+    [nathankarasch@mac browser_cli]$ kill -9 48817
+    [nathankarasch@mac browser_cli]$
     [1]+  Killed: 9               emacs
      */
     await output(new DivElement()..text='Killed: $id $command');

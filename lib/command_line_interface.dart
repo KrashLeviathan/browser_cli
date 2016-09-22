@@ -154,17 +154,4 @@ class CommandLineInterface {
     print("handled _previousLine KeyGesture");
     return true;
   }
-
-//  _setupBlinkingPrompt() {
-//    HtmlElement prompt = querySelector('#prompt');
-//    bool promptVisible = false;
-//    Timer promptTimer = new Timer.periodic(new Duration(milliseconds: 500), (timer) {
-//      if (promptVisible) {
-//        prompt.className = CLI.HIDDEN;
-//      } else {
-//        prompt.className = "";
-//      }
-//      promptVisible = !promptVisible;
-//    });
-//  }
 }

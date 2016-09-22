@@ -53,8 +53,8 @@ class FoobarProcess extends Process {
 ## Create a main.dart and register desired process factories
 
 ```dart
-import 'package:hello_morpheus/command_line_interface.dart';
-import 'package:hello_morpheus/process_library.dart';
+import 'package:browser_cli/command_line_interface.dart';
+import 'package:browser_cli/process_library.dart';
 import 'package:my_cool_project/process_library.dart';
 
 CommandLineInterface interface;
@@ -80,4 +80,22 @@ _registerProcesses() {
 
 Here are some of the id and class names used by browser_cli:
 
+### id
+
 - `browser_cli_shell` - The container for the CLI shell.
+- `cli-standard-input` - The div the user types in.
+- `cli-prompt` - The leading bit of text in the standard input
+  div. Defaults to "~ user$"
+- `cli-last-output` - The last div output to the shell.
+
+### class
+
+- `cli-output` - This class applies to all output divs.
+- `cli-stderr` - This class is added to an output div when it's
+  displaying an error message.
+- `cli-input` - This class applies to all (current and previous)
+  input divs.
+- `cli-visible-scroll` - When you want a scrollbar in an output div.
+- `cli-bordered-scroll-area` - When you want the scroll area to
+  have a border.
+- `cli-hidden` - When you want something to be hidden.

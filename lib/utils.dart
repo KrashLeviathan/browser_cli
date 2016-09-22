@@ -3,7 +3,7 @@ library utils;
 const int MAX_INT = 4294967296;
 const String nonBreakingLineSpace = r'&nbsp;';
 
-const String standardPromptText = r'~ user\$';
+const String standardPromptText = r'~ user$';
 
 /// Gives definitions for CSS id and class references
 class CLI {
