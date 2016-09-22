@@ -3,7 +3,7 @@ library process.rm;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:hello_morpheus/process_manager.dart';
+import 'package:browser_cli/process_manager.dart';
 
 class RmProcessFactory extends ProcessFactory {
   static final String COMMAND = 'rm';

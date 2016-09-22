@@ -25,7 +25,7 @@ html, body {
   outline: none;
 }
 
-#shell {
+#browser-cli-shell {
   margin: 1em auto;
   width: 44em;
 }
@@ -49,31 +49,31 @@ html, body {
 }
 
 @media screen and (max-width: 600px) {
-  #shell {
+  #browser-cli-shell {
     margin: 1em;
     width: 95%;
   }
 }
 
-.output {
+.cli-output {
   margin-bottom: 0.5em;
 }
 
-.input {
+.cli-input {
   color: $input-color;
   //text-shadow: 0 0 0 $input-color;
   margin-bottom: 0.5em;
 }
 
-#last-output {
+#cli-last-output {
 
 }
 
-#standard-input {
+#cli-standard-input {
 
 }
 
-#prompt {
+#cli-prompt {
   margin-right: 0.5em;
   color: $current-input-color;
   //text-shadow: 0 0 0 $current-input-color;
@@ -84,7 +84,7 @@ html, body {
   visibility: hidden;
 }
 
-.visible-scroll {
+.cli-visible-scroll {
   &::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;
@@ -96,7 +96,7 @@ html, body {
   }
 }
 
-.bordered-scroll-area {
+.cli-bordered-scroll-area {
   height: 200px;
   overflow-y: scroll;
   border: 1px solid gray;

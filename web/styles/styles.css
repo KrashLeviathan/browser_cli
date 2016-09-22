@@ -15,7 +15,7 @@ html, body {
 *:focus {
   outline: none; }
 
-#shell {
+#browser-cli-shell {
   margin: 1em auto;
   width: 44em; }
 
@@ -29,17 +29,17 @@ html, body {
   html, body {
     font-size: small; } }
 @media screen and (max-width: 600px) {
-  #shell {
+  #browser-cli-shell {
     margin: 1em;
     width: 95%; } }
-.output {
+.cli-output {
   margin-bottom: 0.5em; }
 
-.input {
+.cli-input {
   color: #ccc8a1;
   margin-bottom: 0.5em; }
 
-#prompt {
+#cli-prompt {
   margin-right: 0.5em;
   color: #f8f4c8;
   font-weight: 700; }
@@ -47,15 +47,15 @@ html, body {
 .hidden {
   visibility: hidden; }
 
-.visible-scroll::-webkit-scrollbar {
+.cli-visible-scroll::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 7px; }
-.visible-scroll::-webkit-scrollbar-thumb {
+.cli-visible-scroll::-webkit-scrollbar-thumb {
   border-radius: 4px;
   background-color: rgba(113, 113, 113, 0.5);
   -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5); }
 
-.bordered-scroll-area {
+.cli-bordered-scroll-area {
   height: 200px;
   overflow-y: scroll;
   border: 1px solid gray;

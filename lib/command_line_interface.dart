@@ -3,22 +3,23 @@ library command_line_interface;
 import 'dart:html';
 import 'dart:async';
 
-import 'package:hello_morpheus/environment_variables.dart';
-import 'package:hello_morpheus/process_manager.dart';
-import 'package:hello_morpheus/processes/authentication_process.dart';
+import 'package:browser_cli/environment_variables.dart';
+import 'package:browser_cli/process_manager.dart';
+import 'package:browser_cli/src/processes/authentication_process.dart';
+import 'package:browser_cli/utils.dart';
 
-part 'command_line_interface/key_binding_manager.dart';
-part 'command_line_interface/key_gesture.dart';
-part 'command_line_interface/parsed_input.dart';
+part 'src/command_line_interface/key_binding_manager.dart';
+part 'src/command_line_interface/key_gesture.dart';
+part 'src/command_line_interface/parsed_input.dart';
 
 class CommandLineInterface {
-  DivElement get shell => querySelector('#shell');
-  SpanElement get standardInput => querySelector('#standard-input');
-  SpanElement get prompt => querySelector('#prompt');
+  DivElement get shell => querySelector('#${CLI.SHELL}');
+  SpanElement get standardInput => querySelector('#${CLI.STANDARD_INPUT}');
+  SpanElement get prompt => querySelector('#${CLI.PROMPT}');
   String get stdIn => standardInput.text;
-  DivElement get lastOutput => querySelector('#last-output');
+  DivElement get lastOutput => querySelector('#${CLI.LAST_OUTPUT}');
 
-  String promptText = '~ user\$';
+  String promptText;
 
   final ProcessManager processManager = new ProcessManager();
   StreamSubscription processManagerOutputSubscription;
@@ -29,7 +30,8 @@ class CommandLineInterface {
 
   KeyBindingManager _keyBindingManager = new KeyBindingManager();
 
-  CommandLineInterface() {
+  CommandLineInterface({prompt: standardPromptText}) {
+    promptText = prompt;
     _addBindings();
     _addEnvVars();
     start();
@@ -68,10 +70,10 @@ class CommandLineInterface {
 
   _print(DivElement outputDiv, {stderr: false}) {
     lastOutput?.attributes?.remove('id');
-    outputDiv..id = 'last-output'
-      ..classes.add('output');
+    outputDiv..id = CLI.LAST_OUTPUT
+      ..classes.add(CLI.OUTPUT);
     if (stderr) {
-      outputDiv.classes.add('stderr');
+      outputDiv.classes.add(CLI.STDERR);
     }
     shell.children.add(outputDiv);
   }
@@ -87,13 +89,13 @@ class CommandLineInterface {
       standardInput.remove();
       inputContainer.text = previousStdIn;
     }
-    var inputContainer = new DivElement()..className = 'input';
+    var inputContainer = new DivElement()..className = CLI.INPUT;
     var userInput = new SpanElement()
-      ..id = 'standard-input'
-      ..className = 'input'
+      ..id = CLI.STANDARD_INPUT
+      ..className = CLI.INPUT
       ..contentEditable = 'true';
     var prompt = new SpanElement()
-      ..id = 'prompt'
+      ..id = CLI.PROMPT
       ..text = promptText;
     inputContainer.children..add(prompt)..add(userInput);
     shell.children.add(inputContainer);
@@ -158,7 +160,7 @@ class CommandLineInterface {
 //    bool promptVisible = false;
 //    Timer promptTimer = new Timer.periodic(new Duration(milliseconds: 500), (timer) {
 //      if (promptVisible) {
-//        prompt.className = "hidden";
+//        prompt.className = CLI.HIDDEN;
 //      } else {
 //        prompt.className = "";
 //      }

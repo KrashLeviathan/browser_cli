@@ -1,12 +1,12 @@
 library process;
 
-export 'package:hello_morpheus/processes/authentication_process.dart';
-export 'package:hello_morpheus/processes/cd_process.dart';
-export 'package:hello_morpheus/processes/help_process.dart';
-export 'package:hello_morpheus/processes/jobs_process.dart';
-export 'package:hello_morpheus/processes/ls_process.dart';
-export 'package:hello_morpheus/processes/man_process.dart';
-export 'package:hello_morpheus/processes/mkdir_process.dart';
-export 'package:hello_morpheus/processes/printenv_process.dart';
-export 'package:hello_morpheus/processes/rm_process.dart';
-export 'package:hello_morpheus/processes/testinput_process.dart';
+export 'package:browser_cli/src/processes/authentication_process.dart';
+export 'package:browser_cli/src/processes/cd_process.dart';
+export 'package:browser_cli/src/processes/help_process.dart';
+export 'package:browser_cli/src/processes/jobs_process.dart';
+export 'package:browser_cli/src/processes/ls_process.dart';
+export 'package:browser_cli/src/processes/man_process.dart';
+export 'package:browser_cli/src/processes/mkdir_process.dart';
+export 'package:browser_cli/src/processes/printenv_process.dart';
+export 'package:browser_cli/src/processes/rm_process.dart';
+export 'package:browser_cli/src/processes/testinput_process.dart';

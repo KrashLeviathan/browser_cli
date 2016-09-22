@@ -4,9 +4,9 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:math' show Random;
 
-import 'package:hello_morpheus/utils.dart' as utils;
+import 'package:browser_cli/utils.dart' as utils;
 
-part 'process_manager/process.dart';
+part 'src/process_manager/process.dart';
 
 class ProcessManager {
   int _randSeed;
@@ -49,7 +49,9 @@ class ProcessManager {
       });
       return true;
     } else {
-      _outputStreamController.add(new DivElement()..text='$command: command not found');
+      // TODO: Try throwing error instead...
+      _outputStreamController.add(new DivElement()
+        ..text='$command: command not found'..classes.add(utils.CLI.STDERR));
       _triggerInputStreamController.add(false);
       return false;
     }

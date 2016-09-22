@@ -3,7 +3,8 @@ library process.help;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:hello_morpheus/process_manager.dart';
+import 'package:browser_cli/process_manager.dart';
+import 'package:browser_cli/utils.dart';
 
 class HelpProcessFactory extends ProcessFactory {
   static final String COMMAND = 'help';
@@ -39,7 +40,7 @@ Pork belly ham boudin frankfurter venison beef ribs spare ribs. Filet mignon dru
 <br>
 Jowl short loin ham hock leberkas flank, tenderloin swine andouille pork hamburger rump shankle t-bone. Sirloin hamburger filet mignon, short ribs chuck chicken pork porchetta pork loin salami. Kevin ham hock bresaola landjaeger pig ham short loin porchetta flank tongue short ribs salami. Beef ribs turducken landjaeger, rump prosciutto cow shoulder boudin leberkas kielbasa frankfurter shankle.
     ''');
-    div.className = 'visible-scroll bordered-scroll-area';
+    div.className = '${CLI.VISIBLE_SCROLL} ${CLI.BORDERED_SCROLL_AREA}';
     output(div);
   }
 

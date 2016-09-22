@@ -3,9 +3,9 @@ library process.printenv;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:hello_morpheus/environment_variables.dart';
-import 'package:hello_morpheus/process_manager.dart';
-import 'package:hello_morpheus/utils.dart';
+import 'package:browser_cli/environment_variables.dart';
+import 'package:browser_cli/process_manager.dart';
+import 'package:browser_cli/utils.dart';
 
 class PrintEnvProcessFactory extends ProcessFactory {
   static final String COMMAND = 'printenv';

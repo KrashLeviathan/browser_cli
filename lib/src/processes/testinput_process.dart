@@ -3,7 +3,7 @@ library process.testinput;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:hello_morpheus/process_manager.dart';
+import 'package:browser_cli/process_manager.dart';
 
 class TestInputProcessFactory extends ProcessFactory {
   static final String COMMAND = 'testinput';

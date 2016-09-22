@@ -28,7 +28,7 @@ class KeyBindingManager {
 
   _handleKeyDown(KeyboardEvent event) {
     if (!active) return;
-    querySelector('#standard-input')?.focus();
+    querySelector('#${CLI.STANDARD_INPUT}')?.focus();
     bindings.keys.where((gesture) => gesture.matches(event)).forEach((gesture) {
       if (bindings[gesture](event)) return;
     });

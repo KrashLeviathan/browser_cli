@@ -3,7 +3,7 @@ library process.man;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:hello_morpheus/process_manager.dart';
+import 'package:browser_cli/process_manager.dart';
 
 class ManProcessFactory extends ProcessFactory {
   static final String COMMAND = 'man';
