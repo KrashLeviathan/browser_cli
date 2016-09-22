@@ -66,10 +66,13 @@ class CommandLineInterface {
     // TODO
   }
 
-  _print(DivElement outputDiv) {
+  _print(DivElement outputDiv, {stderr: false}) {
     lastOutput?.attributes?.remove('id');
     outputDiv..id = 'last-output'
       ..classes.add('output');
+    if (stderr) {
+      outputDiv.classes.add('stderr');
+    }
     shell.children.add(outputDiv);
   }
 
@@ -101,28 +104,38 @@ class CommandLineInterface {
     _keyBindingManager.bindings[new KeyGesture(KeyCode.ENTER)] = _commitInput;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_C, ctrlKey: true)] =
         _sigint;
+    _keyBindingManager.bindings[new KeyGesture(KeyCode.DOWN_ARROW)] = _nextLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_N, ctrlKey: true)] =
         _nextLine;
+    _keyBindingManager.bindings[new KeyGesture(KeyCode.UP_ARROW)] = _previousLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, ctrlKey: true)] =
         _previousLine;
   }
 
   _addEnvVars() {
     new EnvVars()
-        ..set('TEST_VAR_1', 'foobar')
-        ..set('HOME', 'is where the heart is');
+        ..set('PATH', '"Do not go where the path may lead, go instead where '
+            'there is no path and leave a trail." - Ralph Waldo Emerson')
+        ..set('HOME', '"Home is the place where, when you have to go there, '
+            'they have to take you in." - Robert Frost');
   }
 
   bool _commitInput(KeyboardEvent event) {
-    if (stdIn.endsWith(r'\')) {
-      return false;
+    try {
+      if (stdIn.endsWith(r'\')) {
+        return false;
+      }
+      event.preventDefault();
+      var parsedInput = new ParsedInput.fromString(stdIn);
+      if (parsedInput != null) {
+        processManager.startProcess(
+            parsedInput.command, args: parsedInput.args);
+      }
+      return true;
+    } catch (exception) {
+      _print(new DivElement()..text=exception.toString(), stderr: true);
+      return true;
     }
-    event.preventDefault();
-    var parsedInput = new ParsedInput.fromString(stdIn);
-    if (parsedInput != null) {
-      processManager.startProcess(parsedInput.command, args: parsedInput.args);
-    }
-    return true;
   }
 
   bool _sigint(KeyboardEvent event) {
@@ -131,12 +144,12 @@ class CommandLineInterface {
   }
 
   bool _nextLine(KeyboardEvent event) {
-    print("handled Ctrl+N");
+    print("handled _nextLine KeyGesture");
     return true;
   }
 
   bool _previousLine(KeyboardEvent event) {
-    print("handled Ctrl+P");
+    print("handled _previousLine KeyGesture");
     return true;
   }
 
