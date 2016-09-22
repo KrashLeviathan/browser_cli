@@ -22,6 +22,7 @@ class ProcessManager {
   Stream<DivElement> get onOutput => _outputStreamController.stream;
 
   StreamController<bool> _triggerInputStreamController = new StreamController();
+
   /// Indicates to the command line interface to get input from the user. If the value is `true`,
   /// the input is being requested by the process. If `false`, it is handled normally by the
   /// command line interface.
@@ -51,7 +52,8 @@ class ProcessManager {
     } else {
       // TODO: Try throwing error instead...
       _outputStreamController.add(new DivElement()
-        ..text='$command: command not found'..classes.add(utils.CLI.STDERR));
+        ..text = '$command: command not found'
+        ..classes.add(utils.CLI.STDERR));
       _triggerInputStreamController.add(false);
       return false;
     }

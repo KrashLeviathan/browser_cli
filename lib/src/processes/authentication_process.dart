@@ -20,8 +20,9 @@ class AuthenticationProcess extends Process {
 
   Future start() async {
     // TODO: Actually need to authenticate
-    await output(new DivElement()..text=
-        'Last login: ${new DateTime.now()} on ${window.location.hostname}');
+    await output(new DivElement()
+      ..text =
+          'Last login: ${new DateTime.now()} on ${window.location.hostname}');
     exit(0);
   }
 
@@ -33,6 +34,6 @@ class AuthenticationProcess extends Process {
     [nathankarasch@mac browser_cli]$
     [1]+  Killed: 9               emacs
      */
-    await output(new DivElement()..text='Killed: $id $command');
+    await output(new DivElement()..text = 'Killed: $id $command');
   }
 }

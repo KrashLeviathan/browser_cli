@@ -15,7 +15,5 @@ class FileManager {
     workingPath.add('~');
   }
 
-  static initializeWithData(data) {
-
-  }
+  static initializeWithData(data) {}
 }

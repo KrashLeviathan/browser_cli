@@ -19,7 +19,7 @@ class RmProcess extends Process {
 
   Future start() async {
     // TODO
-    await output(new DivElement()..text='RmProcess.start()');
+    await output(new DivElement()..text = 'RmProcess.start()');
     exit(0);
   }
 }

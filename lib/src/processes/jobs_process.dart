@@ -19,7 +19,7 @@ class JobsProcess extends Process {
 
   Future start() async {
     // TODO
-    await output(new DivElement()..text='JobsProcess.start()');
+    await output(new DivElement()..text = 'JobsProcess.start()');
     exit(0);
   }
 }

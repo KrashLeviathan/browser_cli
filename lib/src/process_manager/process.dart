@@ -24,7 +24,8 @@ abstract class Process {
   bool _inForeground = true;
   bool get inForeground => _inForeground;
 
-  StreamController<HtmlElement> _outputStreamController = new StreamController();
+  StreamController<HtmlElement> _outputStreamController =
+      new StreamController();
   Stream<HtmlElement> get outputStream => _outputStreamController.stream;
 
   StreamController<bool> _requestForStdInStreamController =
@@ -41,7 +42,7 @@ abstract class Process {
 
   // Override if necessary
   Future kill([String message]) async {
-    await output(new DivElement()..text='Killed: $id $command');
+    await output(new DivElement()..text = 'Killed: $id $command');
   }
 
   output(DivElement div) => _outputStreamController.add(div);

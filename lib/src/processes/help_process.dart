@@ -46,6 +46,6 @@ Jowl short loin ham hock leberkas flank, tenderloin swine andouille pork hamburg
 
   _parseArgs() {
     // TODO
-    output(new DivElement()..text='parsing arguments ${args.toString()}...');
+    output(new DivElement()..text = 'parsing arguments ${args.toString()}...');
   }
 }

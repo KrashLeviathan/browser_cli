@@ -24,10 +24,10 @@ class TestInputProcess extends Process {
   }
 
   _startSync() {
-    output(new DivElement()..text='Hello World! What is your name?');
+    output(new DivElement()..text = 'Hello World! What is your name?');
     StreamSubscription streamSub;
     streamSub = inputStream.listen((str) {
-      output(new DivElement()..text='Super! Nice to meet you ${str}.');
+      output(new DivElement()..text = 'Super! Nice to meet you ${str}.');
       streamSub.cancel();
       streamSub = null;
     });

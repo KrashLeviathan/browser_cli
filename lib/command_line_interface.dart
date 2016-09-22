@@ -70,7 +70,8 @@ class CommandLineInterface {
 
   _print(DivElement outputDiv, {stderr: false}) {
     lastOutput?.attributes?.remove('id');
-    outputDiv..id = CLI.LAST_OUTPUT
+    outputDiv
+      ..id = CLI.LAST_OUTPUT
       ..classes.add(CLI.OUTPUT);
     if (stderr) {
       outputDiv.classes.add(CLI.STDERR);
@@ -109,17 +110,22 @@ class CommandLineInterface {
     _keyBindingManager.bindings[new KeyGesture(KeyCode.DOWN_ARROW)] = _nextLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_N, ctrlKey: true)] =
         _nextLine;
-    _keyBindingManager.bindings[new KeyGesture(KeyCode.UP_ARROW)] = _previousLine;
+    _keyBindingManager.bindings[new KeyGesture(KeyCode.UP_ARROW)] =
+        _previousLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, ctrlKey: true)] =
         _previousLine;
   }
 
   _addEnvVars() {
     new EnvVars()
-        ..set('PATH', '"Do not go where the path may lead, go instead where '
-            'there is no path and leave a trail." - Ralph Waldo Emerson')
-        ..set('HOME', '"Home is the place where, when you have to go there, '
-            'they have to take you in." - Robert Frost');
+      ..set(
+          'PATH',
+          '"Do not go where the path may lead, go instead where '
+          'there is no path and leave a trail." - Ralph Waldo Emerson')
+      ..set(
+          'HOME',
+          '"Home is the place where, when you have to go there, '
+          'they have to take you in." - Robert Frost');
   }
 
   bool _commitInput(KeyboardEvent event) {
@@ -130,12 +136,12 @@ class CommandLineInterface {
       event.preventDefault();
       var parsedInput = new ParsedInput.fromString(stdIn);
       if (parsedInput != null) {
-        processManager.startProcess(
-            parsedInput.command, args: parsedInput.args);
+        processManager.startProcess(parsedInput.command,
+            args: parsedInput.args);
       }
       return true;
     } catch (exception) {
-      _print(new DivElement()..text=exception.toString(), stderr: true);
+      _print(new DivElement()..text = exception.toString(), stderr: true);
       return true;
     }
   }
