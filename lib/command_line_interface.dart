@@ -12,25 +12,40 @@ part 'src/command_line_interface/key_binding_manager.dart';
 part 'src/command_line_interface/key_gesture.dart';
 part 'src/command_line_interface/parsed_input.dart';
 
+/// The main GUI command line interface that the user interacts with.
 class CommandLineInterface {
+  /// The container for the CLI shell.
   DivElement get shell => querySelector('#${CLI.SHELL}');
+  /// The element that captures user input.
   SpanElement get standardInput => querySelector('#${CLI.STANDARD_INPUT}');
+  /// The leading bit of text before the standard input.
   SpanElement get prompt => querySelector('#${CLI.PROMPT}');
+  /// The active [String] of text that the user has entered.
   String get stdIn => standardInput.text;
+  /// The last element that was output to the shell.
   DivElement get lastOutput => querySelector('#${CLI.LAST_OUTPUT}');
 
+  /// The [String] that makes up the leading bit of text before the standard
+  /// input.
   String promptText;
 
+  /// Manages the starting, stopping, and manipulation for all processes in
+  /// this [CommandLineInterface]
   final ProcessManager processManager = new ProcessManager();
-  StreamSubscription processManagerOutputSubscription;
-  StreamSubscription processManagerTriggerInputSubscription;
+  StreamSubscription _processManagerOutputSubscription;
+  StreamSubscription _processManagerTriggerInputSubscription;
 
-  bool _running = false;
+  /// `true` if the CLI is running, otherwise `false`. Whether or not the CLI is
+  /// running determines whether user input is captured and other things.
   bool get running => _running;
+  bool _running = false;
+  bool _startable = true;
 
   KeyBindingManager _keyBindingManager = new KeyBindingManager();
 
-  CommandLineInterface({prompt: standardPromptText}) {
+  /// Constructs a new CLI with the given prompt text [String]. If no prompt is
+  /// provided, it uses the [standardPromptText].
+  CommandLineInterface({String prompt: standardPromptText}) {
     promptText = prompt;
     _addBindings();
     _addEnvVars();
@@ -40,15 +55,19 @@ class CommandLineInterface {
     processManager.startProcess(AuthenticationProcessFactory.COMMAND);
   }
 
+  /// Starts the CLI, enabling it to capture user input and be interacted with.
   start() {
+    if (!_startable) {
+      throw new Exception("The CommandLineInterface cannot be started again!");
+    }
     _running = true;
     _keyBindingManager.activate();
-    processManagerOutputSubscription = processManager.onOutput.listen((output) {
+    _processManagerOutputSubscription = processManager.onOutput.listen((output) {
       if (running) {
         _print(output);
       }
     });
-    processManagerTriggerInputSubscription =
+    _processManagerTriggerInputSubscription =
         processManager.onTriggerInput.listen((_) {
       if (running) {
         _triggerInput();
@@ -56,14 +75,20 @@ class CommandLineInterface {
     });
   }
 
+  /// Stops the CLI, disabling user interaction and process output temporarily.
+  /// The CLI can be started again from this state by calling start().
   stop() {
     _running = false;
     _keyBindingManager.deactivate();
     // TODO
   }
 
+  /// Stops the CLI permanently. It cannot be started again using the start()
+  /// method. The kill() method is used when you want to dispose of browser
+  /// resources being used by the CommandLineInterface.
   kill() {
     _running = false;
+    _startable = false;
     _keyBindingManager.dispose();
     // TODO
   }
@@ -142,6 +167,7 @@ class CommandLineInterface {
       return true;
     } catch (exception) {
       _print(new DivElement()..text = exception.toString(), stderr: true);
+      _triggerInput();
       return true;
     }
   }

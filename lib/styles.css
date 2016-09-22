@@ -39,6 +39,9 @@ html, body {
   color: #ccc8a1;
   margin-bottom: 0.5em; }
 
+.cli-stderr {
+  color: red; }
+
 #cli-prompt {
   margin-right: 0.5em;
   color: #f8f4c8;

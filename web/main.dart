@@ -13,14 +13,9 @@ void main() {
 
 _registerProcesses() {
   interface.processManager.registerProcessFactories([
-    new CdProcessFactory(),
     new JobsProcessFactory(),
     new HelpProcessFactory(),
-    new LsProcessFactory(),
-    new ManProcessFactory(),
-    new MkdirProcessFactory(),
     new PrintEnvProcessFactory(),
-    new RmProcessFactory(),
     new TestInputProcessFactory()
   ]);
 }
