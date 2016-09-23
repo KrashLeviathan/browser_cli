@@ -7,16 +7,20 @@ import 'package:browser_cli/process_manager.dart';
 
 class TestInputProcessFactory extends ProcessFactory {
   static final String COMMAND = 'testinput';
+  static final String USAGE = '';
+  static final String SHORT_DESCRIPTION = '';
+  static final String LONG_DESCRIPTION = '';
 
-  TestInputProcessFactory() : super(COMMAND);
+  TestInputProcessFactory()
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
 
   TestInputProcess createProcess(int id, List args) =>
-      new TestInputProcess(id, COMMAND, args);
+      new TestInputProcess(id, COMMAND, args, this);
 }
 
 class TestInputProcess extends Process {
-  TestInputProcess(int id, String command, List args)
-      : super(id, command, args);
+  TestInputProcess(int id, String command, List args, ProcessFactory factory)
+      : super(id, command, args, factory);
 
   Future start() async {
     await _startSync();

@@ -5,7 +5,17 @@ abstract class ProcessFactory {
   /// The command string used to start this process in the shell.
   final String command;
 
-  ProcessFactory(this.command);
+  /// A short usage summary. Example: "USAGE: jobs [-v | --verbose]"
+  final String usage;
+
+  /// A short description of what the [Process] does.
+  final String shortDescription;
+
+  /// A lengthier description of what the [Process] does.
+  final String longDescription;
+
+  ProcessFactory(
+      this.command, this.usage, this.shortDescription, this.longDescription);
 
   /// Starts a [Process] of a concrete type with the given id and arguments.
   Process createProcess(int id, List args);
@@ -23,6 +33,9 @@ abstract class Process {
 
   /// The arguments passed into the process from the shell.
   final List args;
+
+  /// The factory used to create this process.
+  final ProcessFactory factory;
 
   /// The time the process started.
   final DateTime startTime = new DateTime.now();
@@ -68,7 +81,7 @@ abstract class Process {
   Stream<int> get exitCodeStream => _exitCodeStreamController.stream;
   StreamController<int> _exitCodeStreamController = new StreamController();
 
-  Process(this.id, this.command, this.args);
+  Process(this.id, this.command, this.args, this.factory);
 
   /// Starts the [Process].
   Future start();
@@ -104,4 +117,9 @@ abstract class Process {
   Duration get runTime => (_completed)
       ? startTime.difference(stopTime)
       : startTime.difference(new DateTime.now());
+
+  String toString() => "$id: $command $args $startTime";
+
+  String toStringVerbose() =>
+      "<b>$id: <i>$command</i></b><br>args: $args<br>startTime: $startTime";
 }

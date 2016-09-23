@@ -14,6 +14,25 @@ part 'src/command_line_interface/parsed_input.dart';
 
 /// The main GUI command line interface that the user interacts with.
 class CommandLineInterface {
+  static CommandLineInterface _commandLineInterfaceSingleton;
+
+  // Runs the first time the singleton is constructed.
+  CommandLineInterface._internal() {
+    _commandLineInterfaceSingleton = this;
+    promptText = standardPromptText;
+    _addBindings();
+    _addEnvVars();
+    start();
+    processManager
+        .registerProcessFactories([new AuthenticationProcessFactory()]);
+    processManager.startProcess(AuthenticationProcessFactory.COMMAND);
+  }
+
+  /// Will always return the same singleton [CommandLineInterface] object.
+  factory CommandLineInterface() => (_commandLineInterfaceSingleton == null)
+      ? new CommandLineInterface._internal()
+      : _commandLineInterfaceSingleton;
+
   /// The container for the CLI shell.
   DivElement get shell => querySelector('#${CLI.SHELL}');
 
@@ -46,18 +65,6 @@ class CommandLineInterface {
   bool _startable = true;
 
   KeyBindingManager _keyBindingManager = new KeyBindingManager();
-
-  /// Constructs a new CLI with the given prompt text [String]. If no prompt is
-  /// provided, it uses the [standardPromptText].
-  CommandLineInterface({String prompt: standardPromptText}) {
-    promptText = prompt;
-    _addBindings();
-    _addEnvVars();
-    start();
-    processManager
-        .registerProcessFactories([new AuthenticationProcessFactory()]);
-    processManager.startProcess(AuthenticationProcessFactory.COMMAND);
-  }
 
   /// Starts the CLI, enabling it to capture user input and be interacted with.
   start() {

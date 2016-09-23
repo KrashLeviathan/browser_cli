@@ -9,15 +9,20 @@ import 'package:browser_cli/utils.dart';
 
 class PrintEnvProcessFactory extends ProcessFactory {
   static final String COMMAND = 'printenv';
+  static final String USAGE = '';
+  static final String SHORT_DESCRIPTION = '';
+  static final String LONG_DESCRIPTION = '';
 
-  PrintEnvProcessFactory() : super(COMMAND);
+  PrintEnvProcessFactory()
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
 
   PrintEnvProcess createProcess(int id, List args) =>
-      new PrintEnvProcess(id, COMMAND, args);
+      new PrintEnvProcess(id, COMMAND, args, this);
 }
 
 class PrintEnvProcess extends Process {
-  PrintEnvProcess(int id, String command, List args) : super(id, command, args);
+  PrintEnvProcess(int id, String command, List args, ProcessFactory factory)
+      : super(id, command, args, factory);
 
   Future start() async {
     var envVars = new EnvVars().printEnv;

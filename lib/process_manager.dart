@@ -11,6 +11,23 @@ part 'src/process_manager/process.dart';
 /// Manages the starting, stopping, and manipulation of all processes in the
 /// shell.
 class ProcessManager {
+  static ProcessManager _processManagerSingleton;
+
+  // Runs the first time the singleton is constructed.
+  ProcessManager._internal(int randomizerSeed) {
+    _randSeed = randomizerSeed ?? new Random().nextInt(utils.MAX_INT);
+    _rand = new Random(_randSeed);
+    _processManagerSingleton = this;
+  }
+
+  /// Will always return the same singleton [CommandLineInterface] object.
+  /// The randomizerSeed argument only gets processed the first time the
+  /// singleton is created.
+  factory ProcessManager({int randomizerSeed}) =>
+      (_processManagerSingleton == null)
+          ? new ProcessManager._internal(randomizerSeed)
+          : _processManagerSingleton;
+
   /// The randomizer seed for all pseudo-random operations.
   int get randSeed => _randSeed;
   Random _rand;
@@ -32,14 +49,8 @@ class ProcessManager {
   Stream<bool> get onTriggerInput => _triggerInputStreamController.stream;
   StreamController<bool> _triggerInputStreamController = new StreamController();
 
+  List<String> get registeredCommands => _registeredProcessFactories.keys;
   Map<String, ProcessFactory> _registeredProcessFactories = new Map();
-
-  /// Constructs a new [ProcessManager] with the given randomizer seed. If a
-  /// randomizer seed is not provided, one will be created at random.
-  ProcessManager({int randomizerSeed}) {
-    _randSeed = randomizerSeed ?? new Random().nextInt(utils.MAX_INT);
-    _rand = new Random(_randSeed);
-  }
 
   /// Starts a process in the shell.
   bool startProcess(String command, {List args}) {
