@@ -16,12 +16,16 @@ part 'src/command_line_interface/parsed_input.dart';
 class CommandLineInterface {
   /// The container for the CLI shell.
   DivElement get shell => querySelector('#${CLI.SHELL}');
+
   /// The element that captures user input.
   SpanElement get standardInput => querySelector('#${CLI.STANDARD_INPUT}');
+
   /// The leading bit of text before the standard input.
   SpanElement get prompt => querySelector('#${CLI.PROMPT}');
+
   /// The active [String] of text that the user has entered.
   String get stdIn => standardInput.text;
+
   /// The last element that was output to the shell.
   DivElement get lastOutput => querySelector('#${CLI.LAST_OUTPUT}');
 
@@ -62,7 +66,8 @@ class CommandLineInterface {
     }
     _running = true;
     _keyBindingManager.activate();
-    _processManagerOutputSubscription = processManager.onOutput.listen((output) {
+    _processManagerOutputSubscription =
+        processManager.onOutput.listen((output) {
       if (running) {
         _print(output);
       }
@@ -129,6 +134,8 @@ class CommandLineInterface {
   }
 
   _addBindings() {
+    // NOTE: Not all browsers allow all KeyGestures to be captured. Like in
+    //       Chrome, you can't capture Ctrl+N, Ctrl+T, or Ctrl+W.
     _keyBindingManager.bindings[new KeyGesture(KeyCode.ENTER)] = _commitInput;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_C, ctrlKey: true)] =
         _sigint;
@@ -139,6 +146,7 @@ class CommandLineInterface {
         _previousLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, ctrlKey: true)] =
         _previousLine;
+    _keyBindingManager.bindings[new KeyGesture(KeyCode.TAB)] = _lineCompletion;
   }
 
   _addEnvVars() {
@@ -158,6 +166,7 @@ class CommandLineInterface {
       if (stdIn.endsWith(r'\')) {
         return false;
       }
+      event.stopImmediatePropagation();
       event.preventDefault();
       var parsedInput = new ParsedInput.fromString(stdIn);
       if (parsedInput != null) {
@@ -173,17 +182,34 @@ class CommandLineInterface {
   }
 
   bool _sigint(KeyboardEvent event) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    // TODO
     print("handled Ctrl+C");
     return true;
   }
 
   bool _nextLine(KeyboardEvent event) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    // TODO
     print("handled _nextLine KeyGesture");
     return true;
   }
 
   bool _previousLine(KeyboardEvent event) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    // TODO
     print("handled _previousLine KeyGesture");
+    return true;
+  }
+
+  bool _lineCompletion(KeyboardEvent event) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    // TODO
+    print("handled _lineCompletion KeyGesture");
     return true;
   }
 }

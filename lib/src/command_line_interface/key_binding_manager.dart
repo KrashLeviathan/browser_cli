@@ -34,13 +34,13 @@ class KeyBindingManager {
   }
 
   /// Stops listening to user keydown events entirely.
-  dispose() {
+  void dispose() {
     _active = false;
     _windowOnKeyDownSubscription?.cancel();
     _windowOnKeyDownSubscription = null;
   }
 
-  _handleKeyDown(KeyboardEvent event) {
+  void _handleKeyDown(KeyboardEvent event) {
     if (!active) return;
     querySelector('#${CLI.STANDARD_INPUT}')?.focus();
     bindings.keys.where((gesture) => gesture.matches(event)).forEach((gesture) {

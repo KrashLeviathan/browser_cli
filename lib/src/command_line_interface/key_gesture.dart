@@ -1,18 +1,33 @@
 part of command_line_interface;
 
+/// Defines a combination of keystrokes input by the user.
 class KeyGesture {
+  /// The javascript character key code, defined in [KeyCode] variables.
   int keyCode;
+
+  /// Indicates the Control key was held during this [KeyGesture].
   bool ctrlKey;
+
+  /// Indicates the Meta (Command on Mac) key was held during this [KeyGesture].
   bool metaKey;
+
+  /// Indicates the Alt key was held during this [KeyGesture].
   bool altKey;
+
+  /// Indicates the Shift key was held during this [KeyGesture].
   bool shiftKey;
 
+  /// Constructs a [KeyGesture] with the given [keyCode]. If no optional
+  /// parameters are passed, it assumes none of the helper keys (i.e. Ctrl,
+  /// Alt, etc) were held during the gesture.
   KeyGesture(this.keyCode,
       {this.ctrlKey: false,
       this.metaKey: false,
       this.altKey: false,
       this.shiftKey: false});
 
+  /// Returns whether the [KeyGesture] matches the gesture from the given
+  /// [KeyboardEvent].
   bool matches(KeyboardEvent o) => (keyCode == o.keyCode &&
       ctrlKey == o.ctrlKey &&
       metaKey == o.metaKey &&
@@ -20,41 +35,42 @@ class KeyGesture {
       shiftKey == o.shiftKey);
 }
 
-// https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+/// The javascript character key codes for keyboard button strokes
+/// https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
 class KeyCode {
-  static int BACKSPACE = 8;
-  static int TAB = 9;
-  static int ENTER = 13;
-  static int SHIFT = 16;
-  static int CTRL = 17;
-  static int ALT = 18;
-  static int PAUSE_BREAK = 19;
-  static int CAPS_LOCK = 20;
-  static int ESCAPE = 27;
-  static int PAGE_UP = 33;
-  static int PAGE_DOWN = 34;
-  static int END = 35;
-  static int HOME = 36;
-  static int LEFT_ARROW = 37;
-  static int UP_ARROW = 38;
-  static int RIGHT_ARROW = 39;
-  static int DOWN_ARROW = 40;
-  static int INSERT = 45;
-  static int DELETE = 46;
-  static int KEY_C = 67;
-  static int KEY_N = 78;
-  static int KEY_P = 80;
-  static int LEFT_WIN_KEY = 91;
-  static int RIGHT_WIN_KEY = 92;
-  static int SELECT_KEY = 93;
-  static int NUMPAD_0 = 96;
-  static int NUMPAD_1 = 97;
-  static int NUMPAD_2 = 98;
-  static int NUMPAD_3 = 99;
-  static int NUMPAD_4 = 100;
-  static int NUMPAD_5 = 101;
-  static int NUMPAD_6 = 102;
-  static int NUMPAD_7 = 103;
-  static int NUMPAD_8 = 104;
-  static int NUMPAD_9 = 105;
+  static const int BACKSPACE = 8;
+  static const int TAB = 9;
+  static const int ENTER = 13;
+  static const int SHIFT = 16;
+  static const int CTRL = 17;
+  static const int ALT = 18;
+  static const int PAUSE_BREAK = 19;
+  static const int CAPS_LOCK = 20;
+  static const int ESCAPE = 27;
+  static const int PAGE_UP = 33;
+  static const int PAGE_DOWN = 34;
+  static const int END = 35;
+  static const int HOME = 36;
+  static const int LEFT_ARROW = 37;
+  static const int UP_ARROW = 38;
+  static const int RIGHT_ARROW = 39;
+  static const int DOWN_ARROW = 40;
+  static const int INSERT = 45;
+  static const int DELETE = 46;
+  static const int KEY_C = 67;
+  static const int KEY_N = 78;
+  static const int KEY_P = 80;
+  static const int LEFT_WIN_KEY = 91;
+  static const int RIGHT_WIN_KEY = 92;
+  static const int SELECT_KEY = 93;
+  static const int NUMPAD_0 = 96;
+  static const int NUMPAD_1 = 97;
+  static const int NUMPAD_2 = 98;
+  static const int NUMPAD_3 = 99;
+  static const int NUMPAD_4 = 100;
+  static const int NUMPAD_5 = 101;
+  static const int NUMPAD_6 = 102;
+  static const int NUMPAD_7 = 103;
+  static const int NUMPAD_8 = 104;
+  static const int NUMPAD_9 = 105;
 }
