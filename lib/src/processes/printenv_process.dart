@@ -7,11 +7,13 @@ import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/process_manager.dart';
 import 'package:browser_cli/utils.dart';
 
+// TODO: Could use much improvement to make the output cleaner.
+
 class PrintEnvProcessFactory extends ProcessFactory {
   static final String COMMAND = 'printenv';
-  static final String USAGE = '';
-  static final String SHORT_DESCRIPTION = '';
-  static final String LONG_DESCRIPTION = '';
+  static final String USAGE = 'USAGE: printenv';
+  static final String SHORT_DESCRIPTION = 'Prints all environment variables.';
+  static final String LONG_DESCRIPTION = 'Prints all environment variables.';
 
   PrintEnvProcessFactory()
       : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);

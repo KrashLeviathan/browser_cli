@@ -171,7 +171,8 @@ class CommandLineInterface {
       ..set(
           'HOME',
           '"Home is the place where, when you have to go there, '
-          'they have to take you in." - Robert Frost');
+          'they have to take you in." - Robert Frost')
+      ..set('FOOBAR', 'The original term, FUBAR, was an acronym...');
   }
 
   bool _commitInput(KeyboardEvent event) {
