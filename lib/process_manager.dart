@@ -37,6 +37,7 @@ class ProcessManager {
   /// the process id.
   Map<int, Process> get processes => _processes;
   Map<int, Process> _processes = new Map();
+  Map<int, StreamSubscription> _processExitCodeStreamSubscriptions = new Map();
 
   /// The [Stream] of [DivElement] objects that should be output to the shell.
   Stream<DivElement> get onOutput => _outputStreamController.stream;
@@ -62,12 +63,8 @@ class ProcessManager {
       throw new Exception('$command: command not found');
     }
     processes[id] = process;
-    _outputSubscriptions[id] = process.outputStream.listen((output) {
-      _handleProcessOutput(id, output);
-    });
-    process.start().then((_) {
-      _triggerInputStreamController.add(false);
-    });
+    _setupProcessListeners(process);
+    process.start();
     return true;
   }
 
@@ -75,6 +72,7 @@ class ProcessManager {
   bool killProcess(int processId) {
     if (processes.keys.contains(processId) && processes[processId] != null) {
       processes[processId].kill().then((_) {
+        _cleanupFinishedProcess(processId);
         _triggerInputStreamController.add(false);
       });
       return true;
@@ -117,5 +115,34 @@ class ProcessManager {
       }
     }
     return id;
+  }
+
+  void _setupProcessListeners(Process process) {
+    var id = process.id;
+    _outputSubscriptions[id] = process.outputStream.listen((output) {
+      _handleProcessOutput(id, output);
+    });
+    _processExitCodeStreamSubscriptions[id] =
+        process.exitCodeStream.listen((code) {
+      if (code != 0) {
+        _handleProcessOutput(
+            id,
+            new DivElement()
+              ..text = "Exited with code $code."
+              ..className = utils.CLI.STDERR);
+      }
+      _cleanupFinishedProcess(id);
+      _triggerInputStreamController.add(false);
+    });
+  }
+
+  void _cleanupFinishedProcess(int id) {
+    _processes.remove(id);
+    _outputSubscriptions[id].cancel();
+    _outputSubscriptions[id] = null;
+    _outputSubscriptions.remove(id);
+    _processExitCodeStreamSubscriptions[id].cancel();
+    _processExitCodeStreamSubscriptions[id] = null;
+    _processExitCodeStreamSubscriptions.remove(id);
   }
 }

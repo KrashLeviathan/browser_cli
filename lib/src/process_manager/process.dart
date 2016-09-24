@@ -121,5 +121,5 @@ abstract class Process {
   String toString() => "$id: $command $args $startTime";
 
   String toStringVerbose() =>
-      "<b>$id: <i>$command</i></b><br>args: $args<br>startTime: $startTime";
+      "id: <b>$id</b><br>command: $command<br>args: $args<br>startTime: $startTime";
 }

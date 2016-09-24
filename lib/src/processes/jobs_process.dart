@@ -7,9 +7,12 @@ import 'package:browser_cli/process_manager.dart';
 
 class JobsProcessFactory extends ProcessFactory {
   static final String COMMAND = 'jobs';
-  static final String USAGE = '';
-  static final String SHORT_DESCRIPTION = '';
-  static final String LONG_DESCRIPTION = '';
+  static final String USAGE = 'USAGE: jobs [-v | --verbose]';
+  static final String SHORT_DESCRIPTION =
+      'Lists all the processes that are currently running';
+  static final String LONG_DESCRIPTION =
+      'Lists all the processes that are currently running. '
+      'Passing -v as an argument will print it in a longer, more readable format.';
 
   JobsProcessFactory()
       : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
@@ -35,8 +38,10 @@ class JobsProcess extends Process {
     var pm = new ProcessManager();
 
     var div = new DivElement();
-    var text = new ParagraphElement()..text = "Processes currently running:";
-    div.append(text);
+    if (verbose) {
+      var text = new ParagraphElement()..text = "Processes currently running:";
+      div.append(text);
+    }
 
     var list = new UListElement();
     pm.processes.keys.forEach((key) {
@@ -57,11 +62,7 @@ class JobsProcess extends Process {
         null) {
       _displayJobs(verbose: true);
     } else {
-      output(new DivElement()..text = usage());
+      output(new DivElement()..text = factory.usage);
     }
-  }
-
-  String usage() {
-    return "USAGE: jobs [-v | --verbose]";
   }
 }
