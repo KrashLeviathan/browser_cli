@@ -8,6 +8,7 @@ import 'package:browser_cli/process_manager.dart';
 import 'package:browser_cli/src/processes/authentication_process.dart';
 import 'package:browser_cli/utils.dart';
 
+part 'src/command_line_interface/input_history_manager.dart';
 part 'src/command_line_interface/key_binding_manager.dart';
 part 'src/command_line_interface/key_gesture.dart';
 part 'src/command_line_interface/parsed_input.dart';
@@ -65,6 +66,7 @@ class CommandLineInterface {
   bool _startable = true;
 
   KeyBindingManager _keyBindingManager = new KeyBindingManager();
+  InputHistoryManager _inputHistoryManager = new InputHistoryManager();
 
   /// Starts the CLI, enabling it to capture user input and be interacted with.
   start() {
@@ -149,9 +151,13 @@ class CommandLineInterface {
     _keyBindingManager.bindings[new KeyGesture(KeyCode.DOWN_ARROW)] = _nextLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_N, ctrlKey: true)] =
         _nextLine;
+    _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_N, altKey: true)] =
+        _nextLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.UP_ARROW)] =
         _previousLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, ctrlKey: true)] =
+        _previousLine;
+    _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, altKey: true)] =
         _previousLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.TAB)] = _lineCompletion;
   }
@@ -173,6 +179,7 @@ class CommandLineInterface {
       if (stdIn.endsWith(r'\')) {
         return false;
       }
+      _inputHistoryManager.add(stdIn);
       event.stopImmediatePropagation();
       event.preventDefault();
       var parsedInput = new ParsedInput.fromString(stdIn);
@@ -192,24 +199,37 @@ class CommandLineInterface {
     event.stopImmediatePropagation();
     event.preventDefault();
     // TODO
-    print("handled Ctrl+C");
+    _print(new DivElement()..text = "^C");
+    _triggerInput();
     return true;
   }
 
   bool _nextLine(KeyboardEvent event) {
     event.stopImmediatePropagation();
     event.preventDefault();
-    // TODO
-    print("handled _nextLine KeyGesture");
+    standardInput.text = _inputHistoryManager.getNext();
+    _setSelectionToEnd();
     return true;
   }
 
   bool _previousLine(KeyboardEvent event) {
     event.stopImmediatePropagation();
     event.preventDefault();
-    // TODO
-    print("handled _previousLine KeyGesture");
+    standardInput.text = _inputHistoryManager.getPrevious();
+    _setSelectionToEnd();
     return true;
+  }
+
+  void _setSelectionToEnd() {
+    if (stdIn.length == 0) {
+      return;
+    }
+    var range = document.createRange();
+    var selection = window.getSelection();
+    range.setStart(standardInput.childNodes[0], stdIn.length);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   bool _lineCompletion(KeyboardEvent event) {
