@@ -8,9 +8,13 @@ import 'package:browser_cli/utils.dart';
 
 class HelpProcessFactory extends ProcessFactory {
   static final String COMMAND = 'help';
-  static final String USAGE = '';
-  static final String SHORT_DESCRIPTION = '';
-  static final String LONG_DESCRIPTION = '';
+  static final String USAGE = 'USAGE: help [ [-l | --list] | <command> ]';
+  static final String SHORT_DESCRIPTION =
+      'Offers help information for the command line interface.';
+  static final String LONG_DESCRIPTION = 'Offers help information for the '
+      'command line interface. Typing `help [ -l | --list ]` will print '
+      'all commands available to the user. Typing `help <command>` will give '
+      'help information about the command.';
 
   HelpProcessFactory()
       : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
@@ -26,21 +30,67 @@ class HelpProcess extends Process {
   Future start() async {
     if (!args.isEmpty) {
       await _parseArgs();
+    } else {
+      await _displayGeneralHelp();
     }
-    await _displayCommands();
     exit(0);
   }
 
-  _displayCommands() {
+  void _displayGeneralHelp() {
+    output(new DivElement()
+      ..text = """
+You're using browser_cli, a command line interface that runs in the browser!
+To see a list of available commands, type `help --list`. To see help about
+any command, type `help <command>`.
+    """);
+  }
+
+  void _displayCommands() {
     var pm = new ProcessManager();
-    var div = new DivElement()..setInnerHtml(pm.registeredCommands.toString());
-//    div.className = '${CLI.VISIBLE_SCROLL} ${CLI.BORDERED_SCROLL_AREA}';
+    var div = new DivElement();
+    div.append(new ParagraphElement()..text = "Available commands:");
+
+    var list = new UListElement();
+    pm.registeredCommands.forEach((cmd) {
+      list.append(new LIElement()..text = cmd);
+    });
+    div.append(list);
+
+    if (pm.registeredCommands.length > 10) {
+      div.className = '${CLI.VISIBLE_SCROLL} ${CLI.BORDERED_SCROLL_AREA}';
+    }
+
+    output(div);
+  }
+
+  void _displayCommandHelp(String command) {
+    var processFactory =
+        new ProcessManager().registeredProcessFactories[command];
+
+    var div = new DivElement();
+    div.append(new ParagraphElement()..innerHtml = "<b>$command</b>");
+    div.append(new ParagraphElement()..text = processFactory.usage);
+    div.append(new ParagraphElement()..text = processFactory.longDescription);
+
     output(div);
   }
 
   _parseArgs() {
-    var div = new DivElement()
-      ..text = "No arguments taken for $command command!";
-    output(div);
+    var pm = new ProcessManager();
+    for (var i = 0; i < args.length; i++) {
+      var arg = args[i];
+
+      if (arg == "-l" || arg == "--list") {
+        _displayCommands();
+        return;
+      }
+
+      if (pm.registeredCommands.contains(arg)) {
+        _displayCommandHelp(arg);
+        return;
+      }
+    }
+
+    output(new DivElement()..text = factory.usage);
   }
 }

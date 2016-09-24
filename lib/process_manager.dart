@@ -50,7 +50,14 @@ class ProcessManager {
   Stream<bool> get onTriggerInput => _triggerInputStreamController.stream;
   StreamController<bool> _triggerInputStreamController = new StreamController();
 
+  /// A [List] of all commands that have been registered with the
+  /// [ProcessManager].
   List<String> get registeredCommands => _registeredProcessFactories.keys;
+
+  /// A [Map] of all [ProcessFactory] objects that have been registered with
+  /// the [ProcessManager]. The keys in the map are the command names.
+  Map<String, ProcessFactory> get registeredProcessFactories =>
+      _registeredProcessFactories;
   Map<String, ProcessFactory> _registeredProcessFactories = new Map();
 
   /// Starts a process in the shell.
