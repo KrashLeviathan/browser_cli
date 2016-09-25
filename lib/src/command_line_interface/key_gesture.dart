@@ -33,6 +33,14 @@ class KeyGesture {
       metaKey == o.metaKey &&
       altKey == o.altKey &&
       shiftKey == o.shiftKey);
+
+  /// Returns whether the [KeyGesture] equals another gesture with the same
+  /// key code and modifier keys.
+  bool operator ==(KeyGesture o) => (keyCode == o.keyCode &&
+      ctrlKey == o.ctrlKey &&
+      metaKey == o.metaKey &&
+      altKey == o.altKey &&
+      shiftKey == o.shiftKey);
 }
 
 /// The javascript character key codes for keyboard button strokes

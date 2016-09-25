@@ -16,6 +16,11 @@ class KeyBindingManager {
   bool get active => _active;
   bool _active = false;
 
+  /// Returns the number of consecutive presses of the Tab key. Used for
+  /// line completion in the shell.
+  int get consecutiveTabPresses => _consecutiveTabPresses;
+  int _consecutiveTabPresses = 0;
+
   /// Constructs and initializes a new [KeyBindingManager].
   KeyBindingManager() {
     initialize();
@@ -44,6 +49,11 @@ class KeyBindingManager {
     if (!active) return;
     querySelector('#${CLI.STANDARD_INPUT}')?.focus();
     bindings.keys.where((gesture) => gesture.matches(event)).forEach((gesture) {
+      if (new KeyGesture(KeyCode.TAB).matches(event)) {
+        _consecutiveTabPresses++;
+      } else {
+        _consecutiveTabPresses = 0;
+      }
       if (bindings[gesture](event)) return;
     });
   }

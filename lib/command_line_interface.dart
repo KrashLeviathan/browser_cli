@@ -8,6 +8,7 @@ import 'package:browser_cli/process_manager.dart';
 import 'package:browser_cli/src/processes/authentication_process.dart';
 import 'package:browser_cli/utils.dart';
 
+part 'src/command_line_interface/line_completion.dart';
 part 'src/command_line_interface/input_history_manager.dart';
 part 'src/command_line_interface/key_binding_manager.dart';
 part 'src/command_line_interface/key_gesture.dart';
@@ -209,7 +210,7 @@ class CommandLineInterface {
     event.stopImmediatePropagation();
     event.preventDefault();
     standardInput.text = _inputHistoryManager.getNext();
-    _setSelectionToEnd();
+    setSelectionToEnd();
     return true;
   }
 
@@ -217,11 +218,11 @@ class CommandLineInterface {
     event.stopImmediatePropagation();
     event.preventDefault();
     standardInput.text = _inputHistoryManager.getPrevious();
-    _setSelectionToEnd();
+    setSelectionToEnd();
     return true;
   }
 
-  void _setSelectionToEnd() {
+  void setSelectionToEnd() {
     if (stdIn.length == 0) {
       return;
     }
@@ -236,8 +237,14 @@ class CommandLineInterface {
   bool _lineCompletion(KeyboardEvent event) {
     event.stopImmediatePropagation();
     event.preventDefault();
-    // TODO
-    print("handled _lineCompletion KeyGesture");
+    var parsedInput = new ParsedInput.fromString(stdIn);
+    if (parsedInput != null) {
+      if (parsedInput.args.isEmpty) {
+        LineCompletion.completeCommand(parsedInput.command);
+      } else {
+        LineCompletion.completeArgument(parsedInput.args);
+      }
+    }
     return true;
   }
 }
