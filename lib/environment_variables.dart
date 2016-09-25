@@ -4,6 +4,9 @@ library environment_variables;
 /// this file to be able to access global environment variables.
 class EnvVars {
   static EnvVars _envVarsSingleton;
+
+  /// Returns a copy of the environment variables map.
+  Map<String, String> get variablesCopy => new Map.from(_variables);
   Map<String, String> _variables = new Map();
 
   EnvVars._internal() {
@@ -24,24 +27,5 @@ class EnvVars {
           'Environment variable name must be less than 79 characters long!');
     }
     _variables[varName] = value;
-  }
-
-  /// Returns a list of all the environment variables in the format:
-  ///
-  ///     HOME                     = 'My Snazzy Home Folder'
-  ///     FOOBAR                   = 'Some variable'
-  ///     A_LONG_ENV_VARIABLE_NAME = 'Something important, I'm sure'
-  List<String> get printEnv {
-    var list = new List();
-    var longestLength = 0;
-    _variables.keys.forEach((key) {
-      if (key.length > longestLength) {
-        longestLength = key.length;
-      }
-    });
-    _variables.keys.forEach((key) {
-      list.add('${key.padRight(longestLength)} = \'${_variables[key]}\'');
-    });
-    return list;
   }
 }

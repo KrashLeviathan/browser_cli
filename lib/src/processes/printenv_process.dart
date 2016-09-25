@@ -5,9 +5,6 @@ import 'dart:html';
 
 import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/process_manager.dart';
-import 'package:browser_cli/utils.dart';
-
-// TODO: Could use much improvement to make the output cleaner.
 
 class PrintEnvProcessFactory extends ProcessFactory {
   static final String COMMAND = 'printenv';
@@ -31,13 +28,15 @@ class PrintEnvProcess extends Process {
       output(new DivElement()..text = factory.usage);
       exit(1);
     }
-    var envVars = new EnvVars().printEnv;
-    var sanitizedEnvVars = [];
-    envVars.forEach((str) {
-      sanitizedEnvVars.add(str.replaceAll(' ', nonBreakingLineSpace));
-    });
+    var envVars = new EnvVars().variablesCopy;
+
     var div = new DivElement();
-    await div.setInnerHtml(sanitizedEnvVars.join('<br>'));
+    var uList = new UListElement();
+    envVars.keys.forEach((key) {
+      uList.append(new LIElement()..innerHtml = "<b>$key</b>: ${envVars[key]}");
+    });
+    div.append(uList);
+
     await output(div);
   }
 }
