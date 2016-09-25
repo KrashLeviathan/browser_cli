@@ -67,8 +67,9 @@ class CommandLineInterface {
 
   KeyBindingManager _keyBindingManager = new KeyBindingManager();
   InputHistoryManager _inputHistoryManager = new InputHistoryManager();
-  final RegExp _envVarAssignmentRegExp =
-      new RegExp(r'\$([a-zA-Z\_]+)\s*=\s*(.+)');
+  final RegExp _envVarAssignmentRegExp = new RegExp(r'^([a-zA-Z0-9_]+)=(.+)');
+  final RegExp _envVarRecallRegExp = new RegExp(r'\$([a-zA-Z_]+)');
+//  final RegExp _subExecutionRegExp = new RegExp(r'\$\{(.*)\}'); // TODO
 
   /// Starts the CLI, enabling it to capture user input and be interacted with.
   start() {
@@ -169,7 +170,7 @@ class CommandLineInterface {
       if (stdIn.endsWith(r'\')) {
         return false;
       }
-      if (_variableGetsAssigned()) {
+      if (EnvVars.variableGetsAssigned(stdIn, _envVarAssignmentRegExp)) {
         _triggerInput();
         return true;
       }
@@ -179,7 +180,7 @@ class CommandLineInterface {
       var parsedInput = new ParsedInput.fromString(stdIn);
       if (parsedInput != null) {
         processManager.startProcess(parsedInput.command,
-            args: parsedInput.args);
+            args: _preProcessArgs(parsedInput.args));
       }
       return true;
     } catch (exception) {
@@ -239,16 +240,12 @@ class CommandLineInterface {
     return true;
   }
 
-  bool _variableGetsAssigned() {
-    if (_envVarAssignmentRegExp.hasMatch(stdIn)) {
-      var envVars = new EnvVars();
-      _envVarAssignmentRegExp.allMatches(stdIn).forEach((match) {
-        envVars.set(match.group(1), trimAndStripQuotes(match.group(2)),
-            persist: true);
-      });
-      return true;
-    } else {
-      return false;
-    }
+  List<String> _preProcessArgs(List<String> args) {
+    var processedArgs = [];
+    args.forEach((arg) {
+      processedArgs
+          .add(EnvVars.replaceMatchesWithEnvVars(arg, _envVarRecallRegExp));
+    });
+    return processedArgs;
   }
 }

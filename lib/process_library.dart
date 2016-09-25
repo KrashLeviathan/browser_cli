@@ -4,6 +4,7 @@ library process;
 
 export 'package:browser_cli/src/processes/authentication_process.dart';
 //export 'package:browser_cli/src/processes/cd_process.dart';
+export 'package:browser_cli/src/processes/echo_process.dart';
 export 'package:browser_cli/src/processes/help_process.dart';
 export 'package:browser_cli/src/processes/jobs_process.dart';
 //export 'package:browser_cli/src/processes/ls_process.dart';

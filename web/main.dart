@@ -13,8 +13,9 @@ void main() {
 
 _registerProcesses() {
   interface.processManager.registerProcessFactories([
-    new JobsProcessFactory(),
+    new EchoProcessFactory(),
     new HelpProcessFactory(),
+    new JobsProcessFactory(),
     new PrintEnvProcessFactory(),
     new TestInputProcessFactory()
   ]);

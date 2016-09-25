@@ -28,7 +28,7 @@ class HelpProcess extends Process {
       : super(id, command, args, factory);
 
   Future start() async {
-    if (!args.isEmpty) {
+    if (args.isNotEmpty) {
       await _parseArgs();
     } else {
       await _displayGeneralHelp();

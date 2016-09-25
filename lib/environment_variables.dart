@@ -1,6 +1,7 @@
 library environment_variables;
 
 import 'dart:html' show document;
+import 'package:browser_cli/utils.dart';
 
 /// A singleton that contains global variables available to any process. They just need to import
 /// this file to be able to access global environment variables.
@@ -50,5 +51,40 @@ class EnvVars {
         _persistingVariables[kvPair[0]] = kvPair[1];
       }
     });
+  }
+
+  /// Returns `true` if the input results in an assignment expression.
+  static bool variableGetsAssigned(String input, RegExp assignmentExp) {
+    if (assignmentExp.hasMatch(input)) {
+      var envVars = new EnvVars();
+      assignmentExp.allMatches(input).forEach((match) {
+        envVars.set(match.group(1), trimAndStripQuotes(match.group(2)),
+            persist: true);
+      });
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// Recursive function that returns the part of the string containing the
+  /// first match concatenated with _replaceMatchesWithEnvVars(str) until there
+  /// are no more matches.
+  static String replaceMatchesWithEnvVars(String str, RegExp replacementExp) {
+    if (replacementExp.hasMatch(str)) {
+      var match = replacementExp.firstMatch(str);
+      var replacement = new EnvVars().get(match.group(1)).toString();
+      str = str.replaceRange(match.start, match.end, replacement);
+      var nextStartingIndex = match.start + replacement.length;
+      var leftHalf = str.substring(0, nextStartingIndex);
+      if (leftHalf.length == str.length) {
+        return leftHalf;
+      } else {
+        var rightHalf = str.substring(nextStartingIndex);
+        return leftHalf + replaceMatchesWithEnvVars(rightHalf, replacementExp);
+      }
+    } else {
+      return str;
+    }
   }
 }
