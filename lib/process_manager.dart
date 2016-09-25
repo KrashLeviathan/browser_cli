@@ -49,6 +49,7 @@ class ProcessManager {
   /// `false`, it is handled normally by the command line interface.
   Stream<bool> get onTriggerInput => _triggerInputStreamController.stream;
   StreamController<bool> _triggerInputStreamController = new StreamController();
+  Map<int, StreamSubscription> _inputRequestStreamSubscriptions = new Map();
 
   /// A [List] of all commands that have been registered with the
   /// [ProcessManager].
@@ -72,6 +73,7 @@ class ProcessManager {
     processes[id] = process;
     _setupProcessListeners(process);
     process.start();
+    process.exit(0);
     return true;
   }
 
@@ -129,27 +131,38 @@ class ProcessManager {
     _outputSubscriptions[id] = process.outputStream.listen((output) {
       _handleProcessOutput(id, output);
     });
+    _inputRequestStreamSubscriptions[id] =
+        process.requestForStdInStream.listen((_) {
+      // TODO
+    });
     _processExitCodeStreamSubscriptions[id] =
         process.exitCodeStream.listen((code) {
       if (code != 0) {
         _handleProcessOutput(
             id,
             new DivElement()
-              ..text = "Exited with code $code."
+              ..text = "exit($code)"
               ..className = utils.CLI.STDERR);
       }
       _cleanupFinishedProcess(id);
-      _triggerInputStreamController.add(false);
+
+      // Ensures the error code exit message is displayed
+      new Future.delayed(Duration.ZERO).then((_) {
+        _triggerInputStreamController.add(false);
+      });
     });
   }
 
   void _cleanupFinishedProcess(int id) {
     _processes.remove(id);
-    _outputSubscriptions[id].cancel();
-    _outputSubscriptions[id] = null;
-    _outputSubscriptions.remove(id);
-    _processExitCodeStreamSubscriptions[id].cancel();
-    _processExitCodeStreamSubscriptions[id] = null;
-    _processExitCodeStreamSubscriptions.remove(id);
+    _cleanupSubscription(_outputSubscriptions, id);
+    _cleanupSubscription(_inputRequestStreamSubscriptions, id);
+    _cleanupSubscription(_processExitCodeStreamSubscriptions, id);
+  }
+
+  void _cleanupSubscription(Map<int, StreamSubscription> map, int id) {
+    map[id].cancel();
+    map[id] = null;
+    map.remove(id);
   }
 }

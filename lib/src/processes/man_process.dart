@@ -27,6 +27,5 @@ class ManProcess extends Process {
   Future start() async {
     // TODO
     await output(new DivElement()..text = 'ManProcess.start()');
-    exit(0);
   }
 }

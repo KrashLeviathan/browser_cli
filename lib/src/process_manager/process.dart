@@ -105,11 +105,27 @@ abstract class Process {
   requestInput() => _requestForStdInStreamController.add(null);
 
   /// Exits with the given exit code. Exit code `0` means the [Process]
-  /// completed successfully.
+  /// completed successfully. `exit(0)` will be called by default if no other
+  /// exit code is given by the process, so most of the time you'll only use
+  /// this command if you're exiting in an error status.
   exit(int code) {
     _completed = true;
-    _stopTime = new DateTime.now();
-    _exitCodeStreamController.add(code);
+    switch (code) {
+      case 0:
+        // Successful exit. The frame delay lets all output be printed to the
+        // shell before exiting.
+        new Future.delayed(Duration.ZERO).then((_) {
+          _stopTime = new DateTime.now();
+          _exitCodeStreamController.add(code);
+        });
+        return;
+      default:
+        // Exit in an error status. There is no frame delay, because an error
+        // status exit should interrupt the process.
+        _stopTime = new DateTime.now();
+        _exitCodeStreamController.add(code);
+        return;
+    }
   }
 
   /// Returns the length of time the [Process] has been running (if not

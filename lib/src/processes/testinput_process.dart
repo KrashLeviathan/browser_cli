@@ -24,7 +24,6 @@ class TestInputProcess extends Process {
 
   Future start() async {
     await _startSync();
-    exit(0);
   }
 
   _startSync() {

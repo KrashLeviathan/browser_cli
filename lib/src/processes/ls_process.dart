@@ -27,6 +27,5 @@ class LsProcess extends Process {
   Future start() async {
     // TODO
     await output(new DivElement()..text = 'LsProcess.start()');
-    exit(0);
   }
 }

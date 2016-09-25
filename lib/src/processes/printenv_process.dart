@@ -27,6 +27,10 @@ class PrintEnvProcess extends Process {
       : super(id, command, args, factory);
 
   Future start() async {
+    if (args.isNotEmpty) {
+      output(new DivElement()..text = factory.usage);
+      exit(1);
+    }
     var envVars = new EnvVars().printEnv;
     var sanitizedEnvVars = [];
     envVars.forEach((str) {
@@ -35,6 +39,5 @@ class PrintEnvProcess extends Process {
     var div = new DivElement();
     await div.setInnerHtml(sanitizedEnvVars.join('<br>'));
     await output(div);
-    exit(0);
   }
 }

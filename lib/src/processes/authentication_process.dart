@@ -28,6 +28,5 @@ class AuthenticationProcess extends Process {
     await output(new DivElement()
       ..text =
           'Last login: ${new DateTime.now()} on ${window.location.hostname}');
-    exit(0);
   }
 }

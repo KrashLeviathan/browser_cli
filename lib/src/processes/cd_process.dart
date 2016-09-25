@@ -27,6 +27,5 @@ class CdProcess extends Process {
   Future start() async {
     // TODO
     await output(new DivElement()..text = 'CdProcess.start()');
-    exit(0);
   }
 }

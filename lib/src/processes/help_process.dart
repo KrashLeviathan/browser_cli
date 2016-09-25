@@ -33,7 +33,6 @@ class HelpProcess extends Process {
     } else {
       await _displayGeneralHelp();
     }
-    exit(0);
   }
 
   void _displayGeneralHelp() {
@@ -45,7 +44,7 @@ any command, type `help <command>`.
     """);
   }
 
-  void _displayCommands() {
+  void _listCommands() {
     var pm = new ProcessManager();
     var div = new DivElement();
     div.append(new ParagraphElement()..text = "Available commands:");
@@ -77,20 +76,29 @@ any command, type `help <command>`.
 
   _parseArgs() {
     var pm = new ProcessManager();
+    var foundListParam = false;
+    var commandsForWhichHelpWasRequested = new Set();
+
     for (var i = 0; i < args.length; i++) {
       var arg = args[i];
-
       if (arg == "-l" || arg == "--list") {
-        _displayCommands();
-        return;
+        foundListParam = true;
+        continue;
       }
-
       if (pm.registeredCommands.contains(arg)) {
-        _displayCommandHelp(arg);
-        return;
+        commandsForWhichHelpWasRequested.add(arg);
+        continue;
       }
+      // Found something that shouldn't be there.
+      output(new DivElement()..text = factory.usage);
+      exit(1);
     }
 
-    output(new DivElement()..text = factory.usage);
+    if (foundListParam) {
+      _listCommands();
+    }
+    commandsForWhichHelpWasRequested.forEach((cmd) {
+      _displayCommandHelp(cmd);
+    });
   }
 }

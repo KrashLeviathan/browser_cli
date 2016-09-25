@@ -27,6 +27,5 @@ class MkdirProcess extends Process {
   Future start() async {
     // TODO
     await output(new DivElement()..text = 'MkdirProcess.start()');
-    exit(0);
   }
 }

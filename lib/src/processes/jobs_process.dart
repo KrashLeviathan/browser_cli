@@ -31,7 +31,6 @@ class JobsProcess extends Process {
     } else {
       await _displayJobs();
     }
-    exit(0);
   }
 
   _displayJobs({verbose: false}) {
@@ -57,12 +56,17 @@ class JobsProcess extends Process {
   }
 
   _parseArgs() {
-    if (args.firstWhere((arg) => arg == "-v" || arg == "--verbose",
-            orElse: () => null) !=
-        null) {
-      _displayJobs(verbose: true);
-    } else {
+    for (var i = 0; i < args.length; i++) {
+      var arg = args[i];
+      if (arg == "-v" || arg == "--verbose") {
+        continue;
+      }
+
+      // Found something that shouldn't be there.
       output(new DivElement()..text = factory.usage);
+      exit(1);
     }
+
+    _displayJobs(verbose: true);
   }
 }
