@@ -44,3 +44,22 @@ class CLI {
   /// This class is applied when you want something to be hidden.
   static const String HIDDEN = 'cli-hidden';
 }
+
+/// Trims the whitespace from the ends of the [String] and removes one pair
+/// of quotations from around the string if there exists a matching set of
+/// quotation marks.
+///
+/// Examples:
+/// 'Hello''' becomes Hello''
+/// World" becomes World"
+/// ""Foo"" becomes "Foo"
+String trimAndStripQuotes(String str) {
+  var trimmed = str.trim();
+  if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    return trimmed.substring(1, trimmed.length - 1);
+  } else if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
+    return trimmed.substring(1, trimmed.length - 1);
+  } else {
+    return trimmed;
+  }
+}

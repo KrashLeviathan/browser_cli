@@ -39,6 +39,10 @@ class ProcessManager {
   Map<int, Process> _processes = new Map();
   Map<int, StreamSubscription> _processExitCodeStreamSubscriptions = new Map();
 
+  /// The most recent [Process] that was started.
+  Process get mostRecent => _mostRecent;
+  Process _mostRecent;
+
   /// The [Stream] of [DivElement] objects that should be output to the shell.
   Stream<DivElement> get onOutput => _outputStreamController.stream;
   Map<int, StreamSubscription> _outputSubscriptions = new Map();
@@ -72,6 +76,7 @@ class ProcessManager {
     }
     processes[id] = process;
     _setupProcessListeners(process);
+    _mostRecent = process;
     process.start();
     process.exit(0);
     return true;

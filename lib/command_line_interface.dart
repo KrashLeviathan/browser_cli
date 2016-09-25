@@ -23,7 +23,6 @@ class CommandLineInterface {
     _commandLineInterfaceSingleton = this;
     promptText = standardPromptText;
     _addBindings();
-    _addEnvVars();
     start();
     processManager
         .registerProcessFactories([new AuthenticationProcessFactory()]);
@@ -68,6 +67,8 @@ class CommandLineInterface {
 
   KeyBindingManager _keyBindingManager = new KeyBindingManager();
   InputHistoryManager _inputHistoryManager = new InputHistoryManager();
+  final RegExp _envVarAssignmentRegExp =
+      new RegExp(r'\$([a-zA-Z\_]+)\s*=\s*(.+)');
 
   /// Starts the CLI, enabling it to capture user input and be interacted with.
   start() {
@@ -163,23 +164,14 @@ class CommandLineInterface {
     _keyBindingManager.bindings[new KeyGesture(KeyCode.TAB)] = _lineCompletion;
   }
 
-  _addEnvVars() {
-    new EnvVars()
-      ..set(
-          'PATH',
-          '"Do not go where the path may lead, go instead where '
-          'there is no path and leave a trail." - Ralph Waldo Emerson')
-      ..set(
-          'HOME',
-          '"Home is the place where, when you have to go there, '
-          'they have to take you in." - Robert Frost')
-      ..set('FOOBAR', 'The original term, FUBAR, was an acronym...');
-  }
-
   bool _commitInput(KeyboardEvent event) {
     try {
       if (stdIn.endsWith(r'\')) {
         return false;
+      }
+      if (_variableGetsAssigned()) {
+        _triggerInput();
+        return true;
       }
       _inputHistoryManager.add(stdIn);
       event.stopImmediatePropagation();
@@ -200,9 +192,8 @@ class CommandLineInterface {
   bool _sigint(KeyboardEvent event) {
     event.stopImmediatePropagation();
     event.preventDefault();
-    // TODO
     _print(new DivElement()..text = "^C");
-    _triggerInput();
+    processManager.killProcess(processManager.mostRecent.id);
     return true;
   }
 
@@ -246,5 +237,18 @@ class CommandLineInterface {
       }
     }
     return true;
+  }
+
+  bool _variableGetsAssigned() {
+    if (_envVarAssignmentRegExp.hasMatch(stdIn)) {
+      var envVars = new EnvVars();
+      _envVarAssignmentRegExp.allMatches(stdIn).forEach((match) {
+        envVars.set(match.group(1), trimAndStripQuotes(match.group(2)),
+            persist: true);
+      });
+      return true;
+    } else {
+      return false;
+    }
   }
 }

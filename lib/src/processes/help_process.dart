@@ -36,6 +36,8 @@ class HelpProcess extends Process {
   }
 
   void _displayGeneralHelp() {
+    // TODO: Talk about how to call commands, input history, line completion,
+    // environment variables, etc.
     output(new DivElement()
       ..text = """
 You're using browser_cli, a command line interface that runs in the browser!
