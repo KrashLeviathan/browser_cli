@@ -18,6 +18,7 @@ _registerProcesses() {
     new HelpProcessFactory(),
     new JobsProcessFactory(),
     new PrintEnvProcessFactory(),
-    new TestInputProcessFactory()
+    new TestInputProcessFactory(),
+    new UnsetProcessFactory()
   ]);
 }

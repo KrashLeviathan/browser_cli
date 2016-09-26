@@ -37,7 +37,15 @@ class EnvVars {
       (_envVarsSingleton == null) ? new EnvVars._internal() : _envVarsSingleton;
 
   /// Fetches the environment variable with the given [varName].
-  String get(String varName) => _persistingVariables[varName];
+  String get(String varName) {
+    if (_persistingVariables.containsKey(varName)) {
+      return _persistingVariables[varName];
+    }
+    if (_tempVariables.containsKey(varName)) {
+      return _tempVariables[varName];
+    }
+    return '';
+  }
 
   /// Sets `[varName] = [value]`. [varName] must be less than 79 characters long.
   void set(String varName, String value, {bool persist: false}) {
