@@ -12,7 +12,7 @@ The following goes inside the `<head>`:
 In the `<body>`, where you want the shell located, add the following:
 
 ```html
-<div id="browser-cli-shell"></div>
+<div id="cli-shell"></div>
 ```
 
 
@@ -84,7 +84,7 @@ used by browser_cli:
 
 ### id
 
-- `browser_cli_shell` - The container for the CLI shell.
+- `cli-shell` - The container for the CLI shell.
 - `cli-standard-input` - The div the user types in.
 - `cli-prompt` - The leading bit of text in the standard input
   div. Defaults to "~ user$"

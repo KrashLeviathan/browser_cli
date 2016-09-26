@@ -49,10 +49,11 @@ class ProcessManager {
   StreamController<DivElement> _outputStreamController = new StreamController();
 
   /// Indicates to the command line interface to get input from the user. If
-  /// the value is `true`, the input is being requested by the process. If
-  /// `false`, it is handled normally by the command line interface.
-  Stream<bool> get onTriggerInput => _triggerInputStreamController.stream;
-  StreamController<bool> _triggerInputStreamController = new StreamController();
+  /// the value is an integer, the input is being requested by the process with
+  /// that id. If the value is 'null', it gets handled normally by the command
+  /// line interface. // TODO
+  Stream<int> get onTriggerInput => _triggerInputStreamController.stream;
+  StreamController<int> _triggerInputStreamController = new StreamController();
   Map<int, StreamSubscription> _inputRequestStreamSubscriptions = new Map();
 
   /// A [List] of all commands that have been registered with the
@@ -67,19 +68,28 @@ class ProcessManager {
 
   /// Starts a process in the shell.
   bool startProcess(String command, {List args}) {
-    var id = _generateId();
-    var arguments = args ?? [];
-    var process =
-        _registeredProcessFactories[command]?.createProcess(id, arguments);
-    if (process == null) {
-      throw new Exception('$command: command not found');
+    try {
+      var id = _generateId();
+      var arguments = args ?? [];
+      var process =
+          _registeredProcessFactories[command]?.createProcess(id, arguments);
+      if (process == null) {
+        throw new Exception('$command: command not found');
+      }
+      processes[id] = process;
+      _setupProcessListeners(process);
+      _mostRecent = process;
+      process.start();
+      if (process.factory.autoExit) {
+        process.exit(0);
+      }
+      return true;
+    } catch (exception) {
+      _outputStreamController.add(new DivElement()
+        ..text = exception.toString()
+        ..className = utils.CLI.STDERR);
+      return false;
     }
-    processes[id] = process;
-    _setupProcessListeners(process);
-    _mostRecent = process;
-    process.start();
-    process.exit(0);
-    return true;
   }
 
   /// Kills a running process
@@ -87,8 +97,19 @@ class ProcessManager {
     if (processes.keys.contains(processId) && processes[processId] != null) {
       processes[processId].kill().then((_) {
         _cleanupFinishedProcess(processId);
-        _triggerInputStreamController.add(false);
+        _triggerInputStreamController.add(null);
       });
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// Sends input `str` to the process indicated by `processId`. Returns `true`
+  /// if the id refers to a valid process, otherwise returns `false`.
+  bool input(int processId, String str) {
+    if (processes.containsKey(processId)) {
+      processes[processId].input(str);
       return true;
     } else {
       return false;
@@ -138,7 +159,7 @@ class ProcessManager {
     });
     _inputRequestStreamSubscriptions[id] =
         process.requestForStdInStream.listen((_) {
-      // TODO
+      _triggerInputStreamController.add(id);
     });
     _processExitCodeStreamSubscriptions[id] =
         process.exitCodeStream.listen((code) {
@@ -153,7 +174,7 @@ class ProcessManager {
 
       // Ensures the error code exit message is displayed
       new Future.delayed(Duration.ZERO).then((_) {
-        _triggerInputStreamController.add(false);
+        _triggerInputStreamController.add(null);
       });
     });
   }

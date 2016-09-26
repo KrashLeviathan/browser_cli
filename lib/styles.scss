@@ -1,6 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700);
 
 $input-color: #ccc8a1;
+$process-input-color: #9ccc7f;
 $output-color: #acabc2;
 //$output-color: #d0d0d0;
 $current-input-color: #f8f4c8;
@@ -25,7 +26,7 @@ html, body {
   outline: none;
 }
 
-#browser-cli-shell {
+#cli-shell {
   margin: 1em auto;
   width: 44em;
 }
@@ -49,7 +50,7 @@ html, body {
 }
 
 @media screen and (max-width: 600px) {
-  #browser-cli-shell {
+  #cli-shell {
     margin: 1em;
     width: 95%;
   }
@@ -65,16 +66,13 @@ html, body {
   margin-bottom: 0.5em;
 }
 
+.cli-input-for-process {
+  color: $process-input-color;
+  margin-bottom: 0.5em;
+}
+
 .cli-stderr {
   color: red;
-}
-
-#cli-last-output {
-
-}
-
-#cli-standard-input {
-
 }
 
 #cli-prompt {

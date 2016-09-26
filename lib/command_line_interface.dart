@@ -2,6 +2,7 @@ library command_line_interface;
 
 import 'dart:html';
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/process_manager.dart';
@@ -39,6 +40,7 @@ class CommandLineInterface {
 
   /// The element that captures user input.
   SpanElement get standardInput => querySelector('#${CLI.STANDARD_INPUT}');
+  Queue<int> _inputRequestStack = new Queue();
 
   /// The leading bit of text before the standard input.
   SpanElement get prompt => querySelector('#${CLI.PROMPT}');
@@ -82,9 +84,9 @@ class CommandLineInterface {
       }
     });
     _processManagerTriggerInputSubscription =
-        processManager.onTriggerInput.listen((_) {
+        processManager.onTriggerInput.listen((processId) {
       if (running) {
-        _triggerInput();
+        _triggerInput(processId);
       }
     });
   }
@@ -118,10 +120,32 @@ class CommandLineInterface {
     shell.children.add(outputDiv);
   }
 
-  _triggerInput() {
+  _triggerInput([int processId = null]) {
     if (!running) {
       return;
     }
+
+    // TODO Fix _inputRequestStack vvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+    // Make modifications for input intended for a certain process
+    var inputClass, modifiedPromptText;
+    if (processId == null) {
+      if (_inputRequestStack.isNotEmpty) {
+        _inputRequestStack.addLast(0);
+        return;
+      }
+      inputClass = CLI.INPUT;
+      modifiedPromptText = promptText;
+    } else {
+      _inputRequestStack.addLast(processId);
+      inputClass = '${CLI.INPUT_FOR_PROCESS} $processId';
+      modifiedPromptText =
+          '$processId ${processManager.processes[processId].command}\$';
+    }
+
+    // TODO Fix _inputRequestStack ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    // Update old StdIn div to new StdIn div
     if (standardInput != null) {
       var previousStdIn = this.prompt.text + ' ' + stdIn;
       var inputContainer = standardInput.parent;
@@ -129,14 +153,15 @@ class CommandLineInterface {
       standardInput.remove();
       inputContainer.text = previousStdIn;
     }
-    var inputContainer = new DivElement()..className = CLI.INPUT;
+
+    var inputContainer = new DivElement()..className = inputClass;
     var userInput = new SpanElement()
       ..id = CLI.STANDARD_INPUT
-      ..className = CLI.INPUT
+      ..className = inputClass
       ..contentEditable = 'true';
     var prompt = new SpanElement()
       ..id = CLI.PROMPT
-      ..text = promptText;
+      ..text = modifiedPromptText;
     inputContainer.children..add(prompt)..add(userInput);
     shell.children.add(inputContainer);
     userInput.focus();
@@ -177,15 +202,26 @@ class CommandLineInterface {
       event.stopImmediatePropagation();
       event.preventDefault();
       var parsedInput = new ParsedInput.fromString(stdIn);
-      if (parsedInput != null) {
-        processManager.startProcess(parsedInput.command,
-            args: _preProcessArgs(parsedInput.args));
-      }
+      _handleParsedInput(parsedInput);
       return true;
     } catch (exception) {
       _print(new DivElement()..text = exception.toString(), stderr: true);
       _triggerInput();
       return true;
+    }
+  }
+
+  void _handleParsedInput(ParsedInput input) {
+    if (input != null) {
+      if (standardInput.classes.contains(CLI.INPUT)) {
+        processManager.startProcess(input.command,
+            args: _preProcessArgs(input.args));
+      } else if (standardInput.classes.contains(CLI.INPUT_FOR_PROCESS)) {
+        var processId = standardInput.classes.firstWhere(
+            (className) => int.parse(className, onError: (_) => 0) != 0);
+        _inputRequestStack.remove(processId);
+        processManager.input(int.parse(processId, onError: (_) => 0), stdIn);
+      }
     }
   }
 

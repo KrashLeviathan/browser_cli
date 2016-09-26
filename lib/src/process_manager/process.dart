@@ -14,8 +14,14 @@ abstract class ProcessFactory {
   /// A lengthier description of what the [Process] does.
   final String longDescription;
 
+  /// If `true`, the processManager will automatically exit with code 0 once
+  /// the start() method completes. If `false`, the process needs to make the
+  /// exit(int) call manually.
+  final bool autoExit;
+
   ProcessFactory(
-      this.command, this.usage, this.shortDescription, this.longDescription);
+      this.command, this.usage, this.shortDescription, this.longDescription,
+      [this.autoExit = true]);
 
   /// Starts a [Process] of a concrete type with the given id and arguments.
   Process createProcess(int id, List args);
@@ -51,7 +57,7 @@ abstract class Process {
   /// The [Stream] of all input that has been given to the [Process] since
   /// starting.
   Stream<String> get inputStream => _inputController.stream;
-  StreamController<String> _inputController = new StreamController();
+  StreamController<String> _inputController = new StreamController.broadcast();
 
   /// Returns `true` if this process is running in the foreground.
   bool get inForeground => _inForeground;
@@ -101,8 +107,19 @@ abstract class Process {
   /// Used by external parties to input [String] objects to the [Process].
   input(String str) => _inputController.add(str);
 
-  /// Used by the [Process] to request standard input from the shell.
-  requestInput() => _requestForStdInStreamController.add(null);
+  /// Used by the [Process] to request standard input from the shell. It
+  /// returns a [Future]<[String]> containing the response from the user.
+  Future<String> requestInput() {
+    Completer<String> completer = new Completer();
+    StreamSubscription streamSub;
+    streamSub = inputStream.listen((response) {
+      completer.complete(response);
+      streamSub.cancel();
+      streamSub = null;
+    });
+    _requestForStdInStreamController.add(null);
+    return completer.future;
+  }
 
   /// Exits with the given exit code. Exit code `0` means the [Process]
   /// completed successfully. `exit(0)` will be called by default if no other

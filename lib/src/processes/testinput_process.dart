@@ -3,6 +3,7 @@ library process.testinput;
 import 'dart:async';
 import 'dart:html';
 
+import 'package:browser_cli/command_line_interface.dart' show ParsedInput;
 import 'package:browser_cli/process_manager.dart';
 
 class TestInputProcessFactory extends ProcessFactory {
@@ -10,9 +11,10 @@ class TestInputProcessFactory extends ProcessFactory {
   static final String USAGE = '';
   static final String SHORT_DESCRIPTION = '';
   static final String LONG_DESCRIPTION = '';
+  static final bool AUTO_EXIT = false;
 
   TestInputProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, AUTO_EXIT);
 
   TestInputProcess createProcess(int id, List args) =>
       new TestInputProcess(id, COMMAND, args, this);
@@ -23,17 +25,24 @@ class TestInputProcess extends Process {
       : super(id, command, args, factory);
 
   Future start() async {
-    await _startSync();
-  }
+    await output(new DivElement()
+      ..text = 'This is an example of a process that accepts user input! '
+          'It also demonstrates how to call other processes from within a '
+          'process, which can be used later for piping. Type something...');
 
-  _startSync() {
-    output(new DivElement()..text = 'Hello World! What is your name?');
-    StreamSubscription streamSub;
-    streamSub = inputStream.listen((str) {
-      output(new DivElement()..text = 'Super! Nice to meet you ${str}.');
-      streamSub.cancel();
-      streamSub = null;
-    });
-    requestInput();
+    var response = "";
+    while (response != 'exit') {
+      response = await requestInput();
+      if (response.startsWith('callCommand ')) {
+        var parsedInput = new ParsedInput.fromString(response.substring(12));
+        new ProcessManager()
+            .startProcess(parsedInput.command, args: parsedInput.args);
+      }
+      output(new DivElement()
+        ..text = 'You typed `${response}`. '
+            'Type `callCommand <command>` to call a command programmatically '
+            'from this process or `exit` to exit this process.');
+    }
+    exit(0);
   }
 }

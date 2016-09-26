@@ -15,7 +15,7 @@ html, body {
 *:focus {
   outline: none; }
 
-#browser-cli-shell {
+#cli-shell {
   margin: 1em auto;
   width: 44em; }
 
@@ -29,7 +29,7 @@ html, body {
   html, body {
     font-size: small; } }
 @media screen and (max-width: 600px) {
-  #browser-cli-shell {
+  #cli-shell {
     margin: 1em;
     width: 95%; } }
 .cli-output {
@@ -37,6 +37,10 @@ html, body {
 
 .cli-input {
   color: #ccc8a1;
+  margin-bottom: 0.5em; }
+
+.cli-input-for-process {
+  color: #9ccc7f;
   margin-bottom: 0.5em; }
 
 .cli-stderr {
