@@ -67,9 +67,6 @@ class CommandLineInterface {
 
   KeyBindingManager _keyBindingManager = new KeyBindingManager();
   InputHistoryManager _inputHistoryManager = new InputHistoryManager();
-  final RegExp _envVarAssignmentRegExp = new RegExp(r'^([a-zA-Z0-9_]+)=(.+)');
-  final RegExp _envVarRecallRegExp = new RegExp(r'\$([a-zA-Z_]+)');
-//  final RegExp _subExecutionRegExp = new RegExp(r'\$\{(.*)\}'); // TODO
 
   /// Starts the CLI, enabling it to capture user input and be interacted with.
   start() {
@@ -167,10 +164,12 @@ class CommandLineInterface {
 
   bool _commitInput(KeyboardEvent event) {
     try {
+      // Check for input that wants to include the newline character
       if (stdIn.endsWith(r'\')) {
         return false;
       }
-      if (EnvVars.variableGetsAssigned(stdIn, _envVarAssignmentRegExp)) {
+      // Check to see if the input is a variable assignment (non-persisting)
+      if (EnvVars.variableGetsAssigned(stdIn)) {
         _triggerInput();
         return true;
       }
@@ -244,7 +243,7 @@ class CommandLineInterface {
     var processedArgs = [];
     args.forEach((arg) {
       processedArgs
-          .add(EnvVars.replaceMatchesWithEnvVars(arg, _envVarRecallRegExp));
+          .add(EnvVars.replaceMatchesWithEnvVars(arg, EnvVars.recallRegExp));
     });
     return processedArgs;
   }

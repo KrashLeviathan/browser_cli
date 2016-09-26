@@ -14,6 +14,17 @@ class EnvVars {
   Map<String, String> _persistingVariables = new Map();
   Map<String, String> _tempVariables = new Map();
 
+  /// A regular expression for matching environment variable assignment.
+  /// Ex: myVar=something
+  ///     myOtherVar="something else"
+  static final RegExp assignmentRegExp = new RegExp(r'^([a-zA-Z0-9_]+)=(.+)');
+
+  /// A regular expression for matching environment variable recall.
+  /// Ex: echo $HOME   // Outputs the contents of the HOME variable.
+  static final RegExp recallRegExp = new RegExp(r'\$([a-zA-Z_]+)');
+
+//  static final RegExp subExecutionRegExp = new RegExp(r'\$\{(.*)\}'); // TODO
+
   /// The prefix to all cookie names
   static const cookiePrefix = "browser_cli_";
 
@@ -42,6 +53,23 @@ class EnvVars {
     }
   }
 
+  /// Removes `varName` from the environment variables.
+  /// Returns `false` if unsuccessful (the varName didn't exist), otherwise
+  /// returns `true`.
+  bool unset(String varName) {
+    if (_persistingVariables.containsKey(varName)) {
+      _persistingVariables.remove(varName);
+      document.cookie =
+          "$cookiePrefix$varName=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      return true;
+    } else if (_tempVariables.containsKey(varName)) {
+      _tempVariables.remove(varName);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /// Loads variables that were previously stored in the document cookies.
   void loadFromCookies() {
     var cookies = document.cookie.split('; ');
@@ -54,12 +82,18 @@ class EnvVars {
   }
 
   /// Returns `true` if the input results in an assignment expression.
-  static bool variableGetsAssigned(String input, RegExp assignmentExp) {
-    if (assignmentExp.hasMatch(input)) {
-      var envVars = new EnvVars();
-      assignmentExp.allMatches(input).forEach((match) {
-        envVars.set(match.group(1), trimAndStripQuotes(match.group(2)),
-            persist: true);
+  /// The variable persists between sessions if either `persist` == true or
+  /// if the variable name already exists in the map of persisting variables.
+  static bool variableGetsAssigned(String input, {bool persist: false}) {
+    if (assignmentRegExp.hasMatch(input)) {
+      assignmentRegExp.allMatches(input).forEach((match) {
+        if (_envVarsSingleton._persistingVariables.keys
+            .contains(match.group(1))) {
+          persist = true;
+        }
+        _envVarsSingleton.set(
+            match.group(1), trimAndStripQuotes(match.group(2)),
+            persist: persist);
       });
       return true;
     } else {
