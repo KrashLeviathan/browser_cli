@@ -3,7 +3,7 @@ library process.testinput;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:browser_cli/command_line_interface.dart' show ParsedInput;
+import 'package:browser_cli/utils.dart';
 import 'package:browser_cli/process_manager.dart';
 
 class TestInputProcessFactory extends ProcessFactory {
@@ -35,13 +35,18 @@ class TestInputProcess extends Process {
       response = await requestInput();
       if (response.startsWith('callCommand ')) {
         var parsedInput = new ParsedInput.fromString(response.substring(12));
-        new ProcessManager()
-            .startProcess(parsedInput.command, args: parsedInput.args);
+        try {
+          new ProcessManager()
+              .startProcess(parsedInput.command, args: parsedInput.args);
+        } catch (exception) {
+          output(new DivElement()..text = exception.toString());
+        }
+      } else {
+        output(new DivElement()
+          ..text = 'You typed `${response}`. '
+              'Type `callCommand <command>` to call a command programmatically '
+              'from this process or `exit` to exit this process.');
       }
-      output(new DivElement()
-        ..text = 'You typed `${response}`. '
-            'Type `callCommand <command>` to call a command programmatically '
-            'from this process or `exit` to exit this process.');
     }
     exit(0);
   }

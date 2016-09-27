@@ -23,7 +23,8 @@ class EnvVars {
   /// Ex: echo $HOME   // Outputs the contents of the HOME variable.
   static final RegExp recallRegExp = new RegExp(r'\$([a-zA-Z_]+)');
 
-//  static final RegExp subExecutionRegExp = new RegExp(r'\$\{(.*)\}'); // TODO
+  // TODO: Subprocess Execution
+//  static final RegExp subExecutionRegExp = new RegExp(r'\$\{(.*)\}');
 
   /// The prefix to all cookie names
   static const cookiePrefix = "browser_cli_";

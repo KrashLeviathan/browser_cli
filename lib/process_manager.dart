@@ -1,6 +1,7 @@
 library process_manager;
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:html';
 import 'dart:math' show Random;
 
@@ -51,10 +52,11 @@ class ProcessManager {
   /// Indicates to the command line interface to get input from the user. If
   /// the value is an integer, the input is being requested by the process with
   /// that id. If the value is 'null', it gets handled normally by the command
-  /// line interface. // TODO
+  /// line interface.
   Stream<int> get onTriggerInput => _triggerInputStreamController.stream;
   StreamController<int> _triggerInputStreamController = new StreamController();
   Map<int, StreamSubscription> _inputRequestStreamSubscriptions = new Map();
+  Queue<int> _inputRequestStack = new Queue();
 
   /// A [List] of all commands that have been registered with the
   /// [ProcessManager].
@@ -74,7 +76,14 @@ class ProcessManager {
       var process =
           _registeredProcessFactories[command]?.createProcess(id, arguments);
       if (process == null) {
-        throw new Exception('$command: command not found');
+        var supplementaryInput = utils.supplementaryCommandMappings[command];
+        if (supplementaryInput == null) {
+          throw new Exception('$command: command not found');
+        }
+        var parsedSuppInput =
+            new utils.ParsedInput.fromString(supplementaryInput);
+        process = _registeredProcessFactories[parsedSuppInput.command]
+            ?.createProcess(id, parsedSuppInput.args);
       }
       processes[id] = process;
       _setupProcessListeners(process);
@@ -88,6 +97,7 @@ class ProcessManager {
       _outputStreamController.add(new DivElement()
         ..text = exception.toString()
         ..className = utils.CLI.STDERR);
+      _triggerInput(null);
       return false;
     }
   }
@@ -97,7 +107,7 @@ class ProcessManager {
     if (processes.keys.contains(processId) && processes[processId] != null) {
       processes[processId].kill().then((_) {
         _cleanupFinishedProcess(processId);
-        _triggerInputStreamController.add(null);
+        _triggerInput(null);
       });
       return true;
     } else {
@@ -109,6 +119,8 @@ class ProcessManager {
   /// if the id refers to a valid process, otherwise returns `false`.
   bool input(int processId, String str) {
     if (processes.containsKey(processId)) {
+      _inputRequestStack
+          .remove(_inputRequestStack.lastWhere((pId) => pId == processId));
       processes[processId].input(str);
       return true;
     } else {
@@ -117,12 +129,12 @@ class ProcessManager {
   }
 
 //  bool bringToForeground(int processId) {
-//    // TODO v2.0.0
+//    // TODO: v2.0.0 - Asynchronous Processes
 //    return false;
 //  }
 
 //  bool sendToBackground(int processId) {
-//    // TODO: v2.0.0
+//    // TODO: v2.0.0 - Asynchronous Processes
 //    return false;
 //  }
 
@@ -136,6 +148,15 @@ class ProcessManager {
   _handleProcessOutput(int id, DivElement output) {
     if (processes[id].inForeground) {
       _outputStreamController.add(output);
+    }
+  }
+
+  void _triggerInput(int processId) {
+    if (_inputRequestStack.isEmpty) {
+      _triggerInputStreamController.add(processId);
+    }
+    if (processId != null) {
+      _inputRequestStack.addLast(processId);
     }
   }
 
@@ -159,7 +180,7 @@ class ProcessManager {
     });
     _inputRequestStreamSubscriptions[id] =
         process.requestForStdInStream.listen((_) {
-      _triggerInputStreamController.add(id);
+      _triggerInput(id);
     });
     _processExitCodeStreamSubscriptions[id] =
         process.exitCodeStream.listen((code) {
@@ -174,7 +195,7 @@ class ProcessManager {
 
       // Ensures the error code exit message is displayed
       new Future.delayed(Duration.ZERO).then((_) {
-        _triggerInputStreamController.add(null);
+        _triggerInput(null);
       });
     });
   }

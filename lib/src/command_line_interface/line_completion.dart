@@ -13,6 +13,16 @@ class LineCompletion {
       }
     });
 
+    supplementaryCommandMappings.keys.forEach((suppCommand) {
+      if (suppCommand.startsWith(command)) {
+        matches.add(suppCommand);
+      }
+    });
+
+    if (matches.isEmpty) {
+      return;
+    }
+
     if (matches.length == 1) {
       cli.standardInput.text = "${matches[0]} ";
       cli.setSelectionToEnd();
@@ -72,6 +82,6 @@ class LineCompletion {
 
   /// Completes a partial argument typed into the shell
   static void completeArgument(List<String> args) {
-    // TODO
+    // TODO - Line Completion for Arguments
   }
 }

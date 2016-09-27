@@ -5,6 +5,7 @@ $process-input-color: #9ccc7f;
 $output-color: #acabc2;
 //$output-color: #d0d0d0;
 $current-input-color: #f8f4c8;
+$current-process-input-color: #c4f9a2;
 
 html, body {
   width: 100%;
@@ -69,6 +70,9 @@ html, body {
 .cli-input-for-process {
   color: $process-input-color;
   margin-bottom: 0.5em;
+  #cli-prompt {
+    color: $current-process-input-color;
+  }
 }
 
 .cli-stderr {

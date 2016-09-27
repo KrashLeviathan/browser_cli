@@ -2,7 +2,6 @@ library command_line_interface;
 
 import 'dart:html';
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/process_manager.dart';
@@ -13,7 +12,6 @@ part 'src/command_line_interface/line_completion.dart';
 part 'src/command_line_interface/input_history_manager.dart';
 part 'src/command_line_interface/key_binding_manager.dart';
 part 'src/command_line_interface/key_gesture.dart';
-part 'src/command_line_interface/parsed_input.dart';
 
 /// The main GUI command line interface that the user interacts with.
 class CommandLineInterface {
@@ -40,7 +38,6 @@ class CommandLineInterface {
 
   /// The element that captures user input.
   SpanElement get standardInput => querySelector('#${CLI.STANDARD_INPUT}');
-  Queue<int> _inputRequestStack = new Queue();
 
   /// The leading bit of text before the standard input.
   SpanElement get prompt => querySelector('#${CLI.PROMPT}');
@@ -96,7 +93,7 @@ class CommandLineInterface {
   stop() {
     _running = false;
     _keyBindingManager.deactivate();
-    // TODO
+    // TODO - Stopping the CLI
   }
 
   /// Stops the CLI permanently. It cannot be started again using the start()
@@ -106,7 +103,7 @@ class CommandLineInterface {
     _running = false;
     _startable = false;
     _keyBindingManager.dispose();
-    // TODO
+    // TODO - Killing the CLI
   }
 
   _print(DivElement outputDiv, {stderr: false}) {
@@ -125,33 +122,24 @@ class CommandLineInterface {
       return;
     }
 
-    // TODO Fix _inputRequestStack vvvvvvvvvvvvvvvvvvvvvvvvvvv
-
     // Make modifications for input intended for a certain process
     var inputClass, modifiedPromptText;
     if (processId == null) {
-      if (_inputRequestStack.isNotEmpty) {
-        _inputRequestStack.addLast(0);
-        return;
-      }
       inputClass = CLI.INPUT;
       modifiedPromptText = promptText;
     } else {
-      _inputRequestStack.addLast(processId);
       inputClass = '${CLI.INPUT_FOR_PROCESS} $processId';
       modifiedPromptText =
           '$processId ${processManager.processes[processId].command}\$';
     }
 
-    // TODO Fix _inputRequestStack ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
     // Update old StdIn div to new StdIn div
     if (standardInput != null) {
-      var previousStdIn = this.prompt.text + ' ' + stdIn;
+      var previousStdIn = this.prompt.text + ' ' + standardInput.innerHtml;
       var inputContainer = standardInput.parent;
       this.prompt.remove();
       standardInput.remove();
-      inputContainer.text = previousStdIn;
+      inputContainer.innerHtml = previousStdIn;
     }
 
     var inputContainer = new DivElement()..className = inputClass;
@@ -193,22 +181,26 @@ class CommandLineInterface {
       if (stdIn.endsWith(r'\')) {
         return false;
       }
+      var stdInString = standardInput.innerHtml
+          .replaceAll(r'\<br>', '')
+          .replaceAll(r'<br>', '')
+          .replaceAll(nonBreakingLineSpace, ' ');
+      event.stopImmediatePropagation();
+      event.preventDefault();
       // Check to see if the input is a variable assignment (non-persisting)
-      if (EnvVars.variableGetsAssigned(stdIn)) {
+      if (EnvVars.variableGetsAssigned(stdInString)) {
         _triggerInput();
         return true;
       }
-      _inputHistoryManager.add(stdIn);
-      event.stopImmediatePropagation();
-      event.preventDefault();
-      var parsedInput = new ParsedInput.fromString(stdIn);
+      _inputHistoryManager.add(stdInString);
+      var parsedInput = new ParsedInput.fromString(stdInString);
       _handleParsedInput(parsedInput);
-      return true;
     } catch (exception) {
       _print(new DivElement()..text = exception.toString(), stderr: true);
       _triggerInput();
-      return true;
     }
+
+    return true;
   }
 
   void _handleParsedInput(ParsedInput input) {
@@ -219,7 +211,6 @@ class CommandLineInterface {
       } else if (standardInput.classes.contains(CLI.INPUT_FOR_PROCESS)) {
         var processId = standardInput.classes.firstWhere(
             (className) => int.parse(className, onError: (_) => 0) != 0);
-        _inputRequestStack.remove(processId);
         processManager.input(int.parse(processId, onError: (_) => 0), stdIn);
       }
     }

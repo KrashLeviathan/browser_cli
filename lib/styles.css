@@ -42,6 +42,8 @@ html, body {
 .cli-input-for-process {
   color: #9ccc7f;
   margin-bottom: 0.5em; }
+  .cli-input-for-process #cli-prompt {
+    color: #c4f9a2; }
 
 .cli-stderr {
   color: red; }
