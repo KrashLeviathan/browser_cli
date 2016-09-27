@@ -19,6 +19,7 @@ class PrintEnvProcessFactory extends ProcessFactory {
       new PrintEnvProcess(id, COMMAND, args, this);
 }
 
+/// Prints all environment variables to the shell.
 class PrintEnvProcess extends Process {
   PrintEnvProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);

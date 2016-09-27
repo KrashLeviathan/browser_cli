@@ -21,6 +21,8 @@ class AuthenticationProcessFactory extends ProcessFactory {
       new AuthenticationProcess(id, COMMAND, args, this);
 }
 
+/// Loads information from the document cookies and (someday) will authenticate
+/// the user's credentials (for logging in).
 class AuthenticationProcess extends Process {
   AuthenticationProcess(
       int id, String command, List args, ProcessFactory factory)

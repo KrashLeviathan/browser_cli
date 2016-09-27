@@ -26,6 +26,12 @@ class ExportProcessFactory extends ProcessFactory {
       new ExportProcess(id, COMMAND, args, this);
 }
 
+/// Creates a permanent variable that
+/// will be recalled in future browser session. Uses the browser cookies to
+/// store the variable. To erase a variable, use the 'unset' command.
+/// The <value> can be wrapped in single or double quotes, but it doesn't
+/// have to be. If it is wrapped in quotes, the outermost pair of quotes is
+/// stripped off the value before storing in the variable.
 class ExportProcess extends Process {
   ExportProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);

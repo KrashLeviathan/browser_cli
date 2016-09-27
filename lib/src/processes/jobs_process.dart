@@ -21,6 +21,8 @@ class JobsProcessFactory extends ProcessFactory {
       new JobsProcess(id, COMMAND, args, this);
 }
 
+/// Lists all the processes that are currently running.
+/// Passing -v as an argument will print it in a longer, more readable format.
 class JobsProcess extends Process {
   JobsProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);

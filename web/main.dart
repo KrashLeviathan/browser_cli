@@ -18,7 +18,7 @@ _registerProcesses() {
     new HelpProcessFactory(),
     new JobsProcessFactory(),
     new PrintEnvProcessFactory(),
-    new TestInputProcessFactory(),
+//    new TestInputProcessFactory(),  // Un-comment this line to see what requesting StdIn for a process looks like!
     new UnsetProcessFactory()
   ]);
 }

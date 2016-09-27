@@ -87,6 +87,9 @@ abstract class Process {
   Stream<int> get exitCodeStream => _exitCodeStreamController.stream;
   StreamController<int> _exitCodeStreamController = new StreamController();
 
+  /// Constructs a [Process] with the given id, command, args, and factory.
+  /// The reference to the factory is useful in getting static information
+  /// about the process.
   Process(this.id, this.command, this.args, this.factory);
 
   /// Starts the [Process].
@@ -151,8 +154,11 @@ abstract class Process {
       ? startTime.difference(stopTime)
       : startTime.difference(new DateTime.now());
 
+  /// Returns a concise [String] representation of the [Process].
   String toString() => "$id: $command $args $startTime";
 
+  /// Returns a more verbose representation of the [Process] that is more
+  /// suitable for HTML.
   String toStringVerbose() =>
       "id: <b>$id</b><br>command: $command<br>args: $args<br>startTime: $startTime";
 }

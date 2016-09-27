@@ -23,6 +23,10 @@ class UnsetProcessFactory extends ProcessFactory {
       new UnsetProcess(id, COMMAND, args, this);
 }
 
+/// Erases an environment variable.
+/// Multiple variable names can be entered as arguments. If an argument
+/// does not match a valid variable name, a warning message will output to
+/// the shell, but the remaining arguments will continue to be processed.
 class UnsetProcess extends Process {
   UnsetProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);

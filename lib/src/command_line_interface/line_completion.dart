@@ -1,5 +1,8 @@
 part of command_line_interface;
 
+/// The [LineCompletion] class is used for completing commands, arguments,
+/// file paths, etc. by hitting the TAB key. All methods are static, so it
+/// should never need to be instantiated.
 class LineCompletion {
   /// The singleton [CommandLineInterface].
   static CommandLineInterface get cli => new CommandLineInterface();

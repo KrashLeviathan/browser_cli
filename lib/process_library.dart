@@ -13,5 +13,7 @@ export 'package:browser_cli/src/processes/jobs_process.dart';
 //export 'package:browser_cli/src/processes/mkdir_process.dart';
 export 'package:browser_cli/src/processes/printenv_process.dart';
 //export 'package:browser_cli/src/processes/rm_process.dart';
-export 'package:browser_cli/src/processes/testinput_process.dart';
+// NOTE: The testinput process is purely for demonstration purposes for anyone
+// who needs to create a process that requests and uses input from the user.
+//export 'package:browser_cli/src/processes/testinput_process.dart';
 export 'package:browser_cli/src/processes/unset_process.dart';

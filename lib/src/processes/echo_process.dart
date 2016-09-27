@@ -10,9 +10,9 @@ class EchoProcessFactory extends ProcessFactory {
   static final String COMMAND = 'echo';
   static final String USAGE = 'USAGE: echo <string>';
   static final String SHORT_DESCRIPTION =
-      'Prints the input back to the terminal.';
+      'Prints the supplied input back to the shell.';
   static final String LONG_DESCRIPTION =
-      'Prints the input back to the terminal';
+      'Prints the supplied input back to the shell';
 
   EchoProcessFactory()
       : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
@@ -21,6 +21,7 @@ class EchoProcessFactory extends ProcessFactory {
       new EchoProcess(id, COMMAND, args, this);
 }
 
+/// Prints the supplied input back to the shell.
 class EchoProcess extends Process {
   EchoProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);

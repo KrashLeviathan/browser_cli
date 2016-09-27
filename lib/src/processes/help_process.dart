@@ -23,6 +23,10 @@ class HelpProcessFactory extends ProcessFactory {
       new HelpProcess(id, COMMAND, args, this);
 }
 
+/// Offers help information for the
+/// command line interface. Typing `help [ -l | --list ]` will print
+/// all commands available to the user. Typing `help <command>` will give
+/// help information about the command.
 class HelpProcess extends Process {
   HelpProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);
