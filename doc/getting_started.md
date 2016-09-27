@@ -1,6 +1,6 @@
-# Getting Started
+## Getting Started
 
-## Add code to html page
+### Add code to html page
 
 The following goes inside the `<head>`:
 
@@ -16,13 +16,13 @@ In the `<body>`, where you want the shell located, add the following:
 ```
 
 
-## Create or import processes
+### Create or import processes
 
 Any process that you want to run in the CLI needs to extend the
 `Process` class, and it needs to also have a factory that extends
 the `ProcessFactory` class.
 
-### ProcessFactory Example:
+#### ProcessFactory Example:
 
 A ProcessFactory should follow the model below, providing a COMMAND,
 USAGE, SHORT_DESCRIPTION, and LONG_DESCRIPTION.
@@ -44,7 +44,7 @@ class EchoProcessFactory extends ProcessFactory {
 }
 ```
 
-### Process Example:
+#### Process Example:
 
 The only two required API for a Process are the constructor and the
 `start()` method. Below is a very basic Process, but they can be much
@@ -69,7 +69,7 @@ class EchoProcess extends Process {
 ```
 
 
-## Create a main.dart and register desired process factories
+### Create a main.dart and register desired process factories
 
 Make sure to register all the standard library process factories,
 as well as any custom process factories you may have.
@@ -100,14 +100,14 @@ _registerProcesses() {
 ```
 
 
-## Style your CLI
+### Style your CLI
 
 You can use the default stylings provided with the package, or
 you can make your own! Below are some (but not all) of the id and
 class names used by browser_cli. To get a more complete list,
 check out the `utils` library.
 
-### id
+#### id
 
 - `cli-shell` - The container for the CLI shell.
 - `cli-standard-input` - The div the user types in.
@@ -115,7 +115,7 @@ check out the `utils` library.
   div. Defaults to "~ user$"
 - `cli-last-output` - The last div output to the shell.
 
-### class
+#### class
 
 - `cli-output` - This class applies to all output divs.
 - `cli-stderr` - This class is added to an output div when it's
