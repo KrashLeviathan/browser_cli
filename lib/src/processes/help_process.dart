@@ -40,14 +40,40 @@ class HelpProcess extends Process {
   }
 
   void _displayGeneralHelp() {
-    // TODO: Talk about how to call commands, input history, line completion,
-    // environment variables, etc.
-    output(new DivElement()
-      ..text = """
-You're using browser_cli, a command line interface that runs in the browser!
-To see a list of available commands, type `help --list`. To see help about
-any command, type `help <command>`.
-    """);
+    var helpText = """
+<p>You are using <b style='color: #9ccc7f; font-size: larger;'>browser_cli</b>,
+a command line interface that runs in the browser!
+To see a list of available commands, type <b>`help --list`</b> or <b>`commands`
+</b>. To see help about any command, type <b>`help &lt;command&gt;`</b>.</p>
+
+<p>A few helpful features you should know about:</p>
+<ul>
+  <li>Get command completion by using the TAB key. Future versions will include
+      argument completion as well.</li>
+  <li>Cycle through previous input history using UP and DOWN or, alternatively,
+      ALT+P, ALT+N. (Sorry I couldn't use CTRL+P and CTRL+N -- browser
+      restrictions reserve certain keybindings that can't be captured in
+      Javascript!)</li>
+  <li>Set temporary variables using <b>`myVar="Hello World!"`</b> format, or set
+      persisting variables using the <b>`export`</b> command. Exported variables
+      are stored in the cookies, so they will persist across browser sessions.
+      Recall the value of a variable using <b>`&#36;myVar`</b>. Erase a variable
+      using the <b>`unset`</b> command.</li>
+</ul>
+
+<p>More features will be coming in the future, so stay tuned!</p>
+<p>This project is open source! Feel free to contribute -- the repository can be
+   found at
+   <a href='https://github.com/KrashLeviathan/browser_cli' target='_blank'>
+   https://github.com/KrashLeviathan/browser_cli</a>.</p>
+<p>Original creator: Nathan Karasch, Software Engineering Student at Iowa State
+University</p>""";
+
+    var validator = new NodeValidatorBuilder.common()
+      ..allowNavigation(new _GithubUriPolicy())
+      ..allowInlineStyles();
+
+    output(new DivElement()..setInnerHtml(helpText, validator: validator));
   }
 
   void _listCommands() {
@@ -106,5 +132,14 @@ any command, type `help <command>`.
     commandsForWhichHelpWasRequested.forEach((cmd) {
       _displayCommandHelp(cmd);
     });
+  }
+}
+
+class _GithubUriPolicy implements UriPolicy {
+  final AnchorElement _hiddenAnchor = new AnchorElement();
+
+  bool allowsUri(String uri) {
+    _hiddenAnchor.href = uri;
+    return _hiddenAnchor.hostname == "github.com";
   }
 }

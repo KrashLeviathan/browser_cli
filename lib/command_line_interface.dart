@@ -167,13 +167,9 @@ class CommandLineInterface {
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_C, ctrlKey: true)] =
         _sigint;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.DOWN_ARROW)] = _nextLine;
-    _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_N, ctrlKey: true)] =
-        _nextLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_N, altKey: true)] =
         _nextLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.UP_ARROW)] =
-        _previousLine;
-    _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, ctrlKey: true)] =
         _previousLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, altKey: true)] =
         _previousLine;
