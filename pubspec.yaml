@@ -1,15 +1,15 @@
 name: 'browser_cli'
 version: 1.0.0-alpha
 description: A Command Line Interface for the browser.
-#author: Nathan Karasch <nathankarasch@gmail.com>
-#homepage: https://github.com/KrashLeviathan
+author: Nathan Karasch <nathankarasch@gmail.com>
+homepage: https://github.com/KrashLeviathan
 
 environment:
-  sdk: '>=1.0.0 <2.0.0'
+  sdk: '>=1.19.1 <2.0.0'
 
 dependencies:
   browser: '>=0.10.0 <0.11.0'
-  dart_to_js_script_rewriter: '^1.0.1'
+  dart_to_js_script_rewriter: '>=1.0.1 <2.0.0'
 
 transformers:
 - dart_to_js_script_rewriter
