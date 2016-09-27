@@ -1,3 +1,7 @@
+/**
+ * This library provides functionality for dealing with environment variables
+ * available to the user and across processes in the application.
+ */
 library environment_variables;
 
 import 'dart:html' show document;

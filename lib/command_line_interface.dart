@@ -1,3 +1,8 @@
+/**
+ * This library provides the main interface between the user and the
+ * application. It receives input from the user, parses input, displays
+ * output to the user, and deals with other elements of user interaction.
+ */
 library command_line_interface;
 
 import 'dart:html';

@@ -1,3 +1,10 @@
+/**
+ * This library contains the [ProcessManager] class, as well as the abstract
+ * [Process] and [ProcessFactory] classes. It handles things like starting
+ * and stopping processes, piping input and output to and from the
+ * [CommandLineInterface], handling asynchronous and synchronous completion,
+ * differentiating between background and foreground processes, and more.
+ */
 library process_manager;
 
 import 'dart:async';

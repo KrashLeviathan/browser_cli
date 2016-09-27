@@ -1,3 +1,7 @@
+/**
+ * This library provides utility functions and variables for browser_cli that
+ * can be easily shared across other libraries.
+ */
 library utils;
 
 part 'package:browser_cli/src/utils/cli.dart';
