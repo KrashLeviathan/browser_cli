@@ -42,13 +42,25 @@ class CommandLineInterface {
   DivElement get shell => querySelector('#${CLI.SHELL}');
 
   /// The element that captures user input.
-  SpanElement get standardInput => querySelector('#${CLI.STANDARD_INPUT}');
+  SpanElement get standardInput {
+    var span = querySelector('#${CLI.STANDARD_INPUT}');
+    if (span != null) {
+      // Update ghost element. Even if standardInput returns null, there will
+      // still be information available from the last time standardInput was
+      // around.
+      _standardInputGhost.classes = span.classes;
+      _standardInputGhost.innerHtml = span.innerHtml;
+    }
+    return span;
+  }
+
+  SpanElement _standardInputGhost = new SpanElement();
 
   /// The leading bit of text before the standard input.
   SpanElement get prompt => querySelector('#${CLI.PROMPT}');
 
   /// The active [String] of text that the user has entered.
-  String get stdIn => standardInput.text;
+  String get stdIn => standardInput?.text ?? _standardInputGhost.text;
 
   /// The last element that was output to the shell.
   DivElement get lastOutput => querySelector('#${CLI.LAST_OUTPUT}');
@@ -112,14 +124,21 @@ class CommandLineInterface {
   }
 
   _print(DivElement outputDiv, {stderr: false}) {
+    if (!running) {
+      return;
+    }
     lastOutput?.attributes?.remove('id');
+    lastOutput?.attributes?.remove('tabindex');
     outputDiv
       ..id = CLI.LAST_OUTPUT
-      ..classes.add(CLI.OUTPUT);
+      ..classes.add(CLI.OUTPUT)
+      ..tabIndex = -1;
     if (stderr) {
       outputDiv.classes.add(CLI.STDERR);
     }
     shell.children.add(outputDiv);
+    outputDiv.focus();
+    _relocateInputToBottom();
   }
 
   _triggerInput([int processId = null]) {
@@ -138,14 +157,7 @@ class CommandLineInterface {
           '$processId ${processManager.processes[processId].command}\$';
     }
 
-    // Update old StdIn div to new StdIn div
-    if (standardInput != null) {
-      var previousStdIn = this.prompt.text + ' ' + standardInput.innerHtml;
-      var inputContainer = standardInput.parent;
-      this.prompt.remove();
-      standardInput.remove();
-      inputContainer.innerHtml = previousStdIn;
-    }
+    _deactivateStandardInput();
 
     var inputContainer = new DivElement()..className = inputClass;
     var userInput = new SpanElement()
@@ -158,6 +170,28 @@ class CommandLineInterface {
     inputContainer.children..add(prompt)..add(userInput);
     shell.children.add(inputContainer);
     userInput.focus();
+  }
+
+  _relocateInputToBottom() {
+    if (!running) {
+      return;
+    }
+
+    if (standardInput != null) {
+      shell.children.add(standardInput.parent);
+      standardInput.focus();
+      setSelectionToEnd();
+    }
+  }
+
+  _deactivateStandardInput() {
+    if (standardInput != null) {
+      var previousStdIn = this.prompt.text + ' ' + standardInput.innerHtml;
+      var inputContainer = standardInput.parent;
+      this.prompt.remove();
+      standardInput.remove();
+      inputContainer.innerHtml = previousStdIn;
+    }
   }
 
   _addBindings() {
@@ -173,6 +207,15 @@ class CommandLineInterface {
         _previousLine;
     _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, altKey: true)] =
         _previousLine;
+    // We can't use Ctrl+N for next line, but we want to prevent the default
+    // action for Ctrl+P (printing) because linux shell users may be used to
+    // pressing it.
+    _keyBindingManager.bindings[new KeyGesture(KeyCode.KEY_P, ctrlKey: true)] =
+        (KeyboardEvent event) {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      return true;
+    };
     _keyBindingManager.bindings[new KeyGesture(KeyCode.TAB)] = _lineCompletion;
   }
 
@@ -188,6 +231,7 @@ class CommandLineInterface {
           .replaceAll(nonBreakingLineSpace, ' ');
       event.stopImmediatePropagation();
       event.preventDefault();
+      _deactivateStandardInput();
       // Check to see if the input is a variable assignment (non-persisting)
       if (EnvVars.variableGetsAssigned(stdInString)) {
         _triggerInput();
@@ -206,11 +250,12 @@ class CommandLineInterface {
 
   void _handleParsedInput(ParsedInput input) {
     if (input != null) {
-      if (standardInput.classes.contains(CLI.INPUT)) {
+      // At this point, the standard input is gone, so we use ghost information
+      if (_standardInputGhost.classes.contains(CLI.INPUT)) {
         processManager.startProcess(input.command,
             args: _preProcessArgs(input.args));
-      } else if (standardInput.classes.contains(CLI.INPUT_FOR_PROCESS)) {
-        var processId = standardInput.classes.firstWhere(
+      } else if (_standardInputGhost.classes.contains(CLI.INPUT_FOR_PROCESS)) {
+        var processId = _standardInputGhost.classes.firstWhere(
             (className) => int.parse(className, onError: (_) => 0) != 0);
         processManager.input(int.parse(processId, onError: (_) => 0), stdIn);
       }
