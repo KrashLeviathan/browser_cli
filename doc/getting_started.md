@@ -24,33 +24,55 @@ the `ProcessFactory` class.
 
 ### ProcessFactory Example:
 
+A ProcessFactory should follow the model below, providing a COMMAND,
+USAGE, SHORT_DESCRIPTION, and LONG_DESCRIPTION.
+
 ```dart
-class FoobarProcessFactory extends ProcessFactory {
-  static final String COMMAND = 'foobar';
+class EchoProcessFactory extends ProcessFactory {
+  static final String COMMAND = 'echo';
+  static final String USAGE = 'USAGE: echo <string>';
+  static final String SHORT_DESCRIPTION =
+      'Prints the supplied input back to the shell.';
+  static final String LONG_DESCRIPTION =
+      'Prints the supplied input back to the shell';
 
-  FoobarProcessFactory() : super(COMMAND);
+  EchoProcessFactory()
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
 
-  FoobarProcess createProcess(int id, List args) =>
-      new FoobarProcess(id, COMMAND, args);
+  EchoProcess createProcess(int id, List args) =>
+      new EchoProcess(id, COMMAND, args, this);
 }
 ```
 
 ### Process Example:
 
+The only two required API for a Process are the constructor and the
+`start()` method. Below is a very basic Process, but they can be much
+more complex. Check out other Processes in the standard library for
+examples of different ways to parse the arguments, how to request
+user input within a running process, how to start other processes
+from within a process, and more!
+
 ```dart
-class FoobarProcess extends Process {
-  FoobarProcess(int id, String command, List args) : super(id, command, args);
+class EchoProcess extends Process {
+  EchoProcess(int id, String command, List args, ProcessFactory factory)
+      : super(id, command, args, factory);
 
   Future start() async {
-    // Implement the process here...
-    
-    exit(0);
+    if (args.isNotEmpty) {
+      await output(new DivElement()..text = args.join(' '));
+    } else {
+      await output(new DivElement()..innerHtml = nonBreakingLineSpace);
+    }
   }
 }
 ```
 
 
 ## Create a main.dart and register desired process factories
+
+Make sure to register all the standard library process factories,
+as well as any custom process factories you may have.
 
 ```dart
 import 'package:browser_cli/command_line_interface.dart';
@@ -66,10 +88,12 @@ void main() {
 
 _registerProcesses() {
   interface.processManager.registerProcessFactories([
-    new CdProcessFactory(),
-    new JobsProcessFactory(),
+    new EchoProcessFactory(),
+    new ExportProcessFactory(),
     new HelpProcessFactory(),
-    new FoobarProcessFactory()
+    new JobsProcessFactory(),
+    new PrintEnvProcessFactory(),
+    new UnsetProcessFactory(),
     // ...
   ]);
 }
@@ -79,8 +103,9 @@ _registerProcesses() {
 ## Style your CLI
 
 You can use the default stylings provided with the package, or
-you can make your own! Here are some of the id and class names
-used by browser_cli:
+you can make your own! Below are some (but not all) of the id and
+class names used by browser_cli. To get a more complete list,
+check out the `utils` library.
 
 ### id
 
