@@ -4,8 +4,8 @@
  */
 library utils;
 
-part 'package:browser_cli/src/utils/cli.dart';
-part 'package:browser_cli/src/utils/parsed_input.dart';
+part 'src/utils/cli.dart';
+part 'src/utils/parsed_input.dart';
 
 /// The max integer number.
 const int MAX_INT = 4294967296;
