@@ -4,6 +4,13 @@ This dart package is a Command Line Interface for the web browser.
 Pull it into your website and create some custom processes to have
 all the sweet command line goodness at your fingertips!
 
+## Take it for a test ride!
+
+[Click Here](https://krashleviathan.github.io/browser_cli/) to try
+it out! Keep in mind you would write custom processes for your own
+website when you use it. The only things demonstrated here are the
+basics.
+
 ## Getting Started
 
 ### Add code to html page

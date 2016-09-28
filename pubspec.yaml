@@ -4,6 +4,8 @@ description: A Command Line Interface for the browser.
 author: Nathan Karasch <nathankarasch@gmail.com>
 homepage: https://github.com/KrashLeviathan/browser_cli
 
+# Demo Website: https://krashleviathan.github.io/browser_cli/
+
 environment:
   sdk: '>=1.18.1 <2.0.0'
 
