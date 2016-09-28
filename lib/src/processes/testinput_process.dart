@@ -40,7 +40,11 @@ class TestInputProcess extends Process {
     var response = "";
     while (response != 'exit') {
       response = await requestInput();
-      if (response.startsWith('callCommand ')) {
+      if (response.startsWith('callCommand testinput')) {
+        output(new DivElement()
+          ..text =
+              'Sorry, I can\'t let you call THAT command! Recursion... pshhhh!');
+      } else if (response.startsWith('callCommand ')) {
         var parsedInput = new ParsedInput.fromString(response.substring(12));
         try {
           new ProcessManager()
@@ -48,6 +52,8 @@ class TestInputProcess extends Process {
         } catch (exception) {
           output(new DivElement()..text = exception.toString());
         }
+      } else if (response == 'exit') {
+        break;
       } else {
         output(new DivElement()
           ..text = 'You typed `${response}`. '

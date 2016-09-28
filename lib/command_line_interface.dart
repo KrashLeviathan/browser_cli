@@ -259,6 +259,8 @@ class CommandLineInterface {
             (className) => int.parse(className, onError: (_) => 0) != 0);
         processManager.input(int.parse(processId, onError: (_) => 0), stdIn);
       }
+    } else {
+      _triggerInput();
     }
   }
 

@@ -1,5 +1,5 @@
 name: 'browser_cli'
-version: 1.0.0-alpha.2
+version: 1.0.0-alpha.3
 description: A Command Line Interface for the browser.
 author: Nathan Karasch <nathankarasch@gmail.com>
 homepage: https://github.com/KrashLeviathan/browser_cli
