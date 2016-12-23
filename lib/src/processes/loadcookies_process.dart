@@ -1,4 +1,4 @@
-library process.authentication;
+library process.loadcookies;
 
 import 'dart:async';
 import 'dart:html';
@@ -6,30 +6,28 @@ import 'dart:html';
 import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/process_manager.dart';
 
-class AuthenticationProcessFactory extends ProcessFactory {
-  static final String COMMAND = 'authenticate';
-  static final String USAGE = 'USAGE: authenticate';
+class LoadCookiesProcessFactory extends ProcessFactory {
+  static final String COMMAND = 'loadcookies';
+  static final String USAGE = 'USAGE: loadcookies';
   static final String SHORT_DESCRIPTION = 'Loads information from the document '
-      'cookies and (someday) will authenticate the user\'s credentials.';
+      'cookies.';
   static final String LONG_DESCRIPTION = 'Loads information from the document '
-      'cookies and (someday) will authenticate the user\'s credentials.';
+      'cookies.';
 
-  AuthenticationProcessFactory()
+  LoadCookiesProcessFactory()
       : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
 
-  AuthenticationProcess createProcess(int id, List args) =>
-      new AuthenticationProcess(id, COMMAND, args, this);
+  LoadCookiesProcess createProcess(int id, List args) =>
+      new LoadCookiesProcess(id, COMMAND, args, this);
 }
 
-/// Loads information from the document cookies and (someday) will authenticate
-/// the user's credentials (for logging in).
-class AuthenticationProcess extends Process {
-  AuthenticationProcess(
+/// Loads information from the document cookies.
+class LoadCookiesProcess extends Process {
+  LoadCookiesProcess(
       int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);
 
   Future start() async {
-    // TODO: Actually need to authenticate (someday maybe?)
     if (args.isNotEmpty) {
       output(new DivElement()..text = factory.usage);
       exit(1);
@@ -42,7 +40,7 @@ class AuthenticationProcess extends Process {
     var envVars = new EnvVars()..loadFromCookies();
     var last_login_time = envVars.get('last_login_time');
     var last_login_location = envVars.get('last_login_location');
-    if (last_login_time != null) {
+    if (last_login_time != null && last_login_time.isNotEmpty) {
       output(new DivElement()
         ..text = 'Last login: $last_login_time on $last_login_location');
     } else {

@@ -10,7 +10,7 @@ import 'dart:async';
 
 import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/process_manager.dart';
-import 'package:browser_cli/src/processes/authentication_process.dart';
+import 'package:browser_cli/src/processes/loadcookies_process.dart';
 import 'package:browser_cli/utils.dart';
 
 part 'src/command_line_interface/line_completion.dart';
@@ -28,9 +28,6 @@ class CommandLineInterface {
     promptText = standardPromptText;
     _addBindings();
     start();
-    processManager
-        .registerProcessFactories([new AuthenticationProcessFactory()]);
-    processManager.startProcess(AuthenticationProcessFactory.COMMAND);
   }
 
   /// Will always return the same singleton [CommandLineInterface] object.

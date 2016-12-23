@@ -97,10 +97,12 @@ CommandLineInterface interface;
 void main() {
   interface = new CommandLineInterface();
   _registerProcesses();
+  interface.processManager.startProcess(LoadCookiesProcessFactory.COMMAND);
 }
 
 _registerProcesses() {
   interface.processManager.registerProcessFactories([
+    new LoadCookiesProcessFactory(),
     new EchoProcessFactory(),
     new ExportProcessFactory(),
     new HelpProcessFactory(),

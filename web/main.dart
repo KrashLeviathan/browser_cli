@@ -9,16 +9,18 @@ CommandLineInterface interface;
 void main() {
   interface = new CommandLineInterface();
   _registerProcesses();
+  interface.processManager.startProcess(LoadCookiesProcessFactory.COMMAND);
 }
 
 _registerProcesses() {
   interface.processManager.registerProcessFactories([
+    new LoadCookiesProcessFactory(),
     new EchoProcessFactory(),
     new ExportProcessFactory(),
     new HelpProcessFactory(),
     new JobsProcessFactory(),
     new PrintEnvProcessFactory(),
-    new TestInputProcessFactory(), // Un-comment this line to see what requesting StdIn for a process looks like!
+    new TestInputProcessFactory(),
     new UnsetProcessFactory()
   ]);
 }
