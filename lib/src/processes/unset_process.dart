@@ -17,7 +17,8 @@ class UnsetProcessFactory extends ProcessFactory {
       'the shell, but the remaining arguments will continue to be processed.';
 
   UnsetProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true, ProcessAccessibility.VERBOSE_VISIBLE);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true,
+            ProcessAccessibility.VERBOSE_VISIBLE);
 
   UnsetProcess createProcess(int id, List args) =>
       new UnsetProcess(id, COMMAND, args, this);

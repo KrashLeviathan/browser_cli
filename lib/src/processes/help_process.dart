@@ -8,7 +8,8 @@ import 'package:browser_cli/utils.dart';
 
 class HelpProcessFactory extends ProcessFactory {
   static final String COMMAND = 'help';
-  static final String USAGE = 'USAGE: help [ [-v | --verbose] [-l | --list] | <command> ]';
+  static final String USAGE =
+      'USAGE: help [ [-v | --verbose] [-l | --list] | <command> ]';
   static final String SHORT_DESCRIPTION =
       'Offers help information for the command line interface.';
   static final String LONG_DESCRIPTION = 'Offers help information for the '
@@ -80,7 +81,8 @@ University</p>""";
     div.append(new ParagraphElement()..text = "Available commands:");
 
     var list = new UListElement();
-    var commands = (verbose) ? pm.verboseRegisteredCommands : pm.registeredCommands;
+    var commands =
+        (verbose) ? pm.verboseRegisteredCommands : pm.registeredCommands;
     commands.forEach((cmd) {
       list.append(new LIElement()..text = cmd);
     });

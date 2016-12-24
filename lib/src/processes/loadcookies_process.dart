@@ -15,7 +15,8 @@ class LoadCookiesProcessFactory extends ProcessFactory {
       'cookies.';
 
   LoadCookiesProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true, ProcessAccessibility.PROGRAMMATIC_USABLE);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true,
+            ProcessAccessibility.PROGRAMMATIC_USABLE);
 
   LoadCookiesProcess createProcess(int id, List args) =>
       new LoadCookiesProcess(id, COMMAND, args, this);
@@ -23,8 +24,7 @@ class LoadCookiesProcessFactory extends ProcessFactory {
 
 /// Loads information from the document cookies.
 class LoadCookiesProcess extends Process {
-  LoadCookiesProcess(
-      int id, String command, List args, ProcessFactory factory)
+  LoadCookiesProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);
 
   Future start() async {

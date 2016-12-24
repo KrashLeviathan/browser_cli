@@ -13,7 +13,8 @@ class PrintEnvProcessFactory extends ProcessFactory {
   static final String LONG_DESCRIPTION = 'Prints all environment variables.';
 
   PrintEnvProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true, ProcessAccessibility.VERBOSE_VISIBLE);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true,
+            ProcessAccessibility.VERBOSE_VISIBLE);
 
   PrintEnvProcess createProcess(int id, List args) =>
       new PrintEnvProcess(id, COMMAND, args, this);

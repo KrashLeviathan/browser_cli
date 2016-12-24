@@ -20,7 +20,8 @@ class ExportProcessFactory extends ProcessFactory {
       'stripped off the value before storing in the variable.';
 
   ExportProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true, ProcessAccessibility.VERBOSE_VISIBLE);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true,
+            ProcessAccessibility.VERBOSE_VISIBLE);
 
   ExportProcess createProcess(int id, List args) =>
       new ExportProcess(id, COMMAND, args, this);

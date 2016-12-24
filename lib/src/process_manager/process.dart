@@ -24,7 +24,8 @@ abstract class ProcessFactory {
 
   ProcessFactory(
       this.command, this.usage, this.shortDescription, this.longDescription,
-      [this.autoExit = true, this.accessibility = ProcessAccessibility.VISIBLE]);
+      [this.autoExit = true,
+      this.accessibility = ProcessAccessibility.VISIBLE]);
 
   /// Starts a [Process] of a concrete type with the given id and arguments.
   Process createProcess(int id, List args);
@@ -37,10 +38,13 @@ abstract class ProcessFactory {
 enum ProcessAccessibility {
   /// Visible. Usable.
   VISIBLE,
+
   /// Only visible if listed verbosely. Usable.
   VERBOSE_VISIBLE,
+
   /// Invisible. Usable.
   HIDDEN_USABLE,
+
   /// Invisible. Not usable in the CLI. (Can only be called programmatically.)
   PROGRAMMATIC_USABLE
 }

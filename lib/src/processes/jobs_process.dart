@@ -15,7 +15,8 @@ class JobsProcessFactory extends ProcessFactory {
       'Passing -v as an argument will print it in a longer, more readable format.';
 
   JobsProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true, ProcessAccessibility.VERBOSE_VISIBLE);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true,
+            ProcessAccessibility.VERBOSE_VISIBLE);
 
   JobsProcess createProcess(int id, List args) =>
       new JobsProcess(id, COMMAND, args, this);
