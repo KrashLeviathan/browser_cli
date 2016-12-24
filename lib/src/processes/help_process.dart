@@ -8,13 +8,14 @@ import 'package:browser_cli/utils.dart';
 
 class HelpProcessFactory extends ProcessFactory {
   static final String COMMAND = 'help';
-  static final String USAGE = 'USAGE: help [ [-l | --list] | <command> ]';
+  static final String USAGE = 'USAGE: help [ [-v | --verbose] [-l | --list] | <command> ]';
   static final String SHORT_DESCRIPTION =
       'Offers help information for the command line interface.';
   static final String LONG_DESCRIPTION = 'Offers help information for the '
       'command line interface. Typing `help [ -l | --list ]` will print '
-      'all commands available to the user. Typing `help <command>` will give '
-      'help information about the command.';
+      'all visible commands available to the user. Adding the [-v | --verbose] '
+      'flag will additionally print all hidden commands available to the user. '
+      'Typing `help <command>` will give help information about a command.';
 
   HelpProcessFactory()
       : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
@@ -23,10 +24,7 @@ class HelpProcessFactory extends ProcessFactory {
       new HelpProcess(id, COMMAND, args, this);
 }
 
-/// Offers help information for the
-/// command line interface. Typing `help [ -l | --list ]` will print
-/// all commands available to the user. Typing `help <command>` will give
-/// help information about the command.
+/// Offers help information for the command line interface.
 class HelpProcess extends Process {
   HelpProcess(int id, String command, List args, ProcessFactory factory)
       : super(id, command, args, factory);
@@ -76,18 +74,19 @@ University</p>""";
     output(new DivElement()..setInnerHtml(helpText, validator: validator));
   }
 
-  void _listCommands() {
+  void _listCommands(bool verbose) {
     var pm = new ProcessManager();
     var div = new DivElement();
     div.append(new ParagraphElement()..text = "Available commands:");
 
     var list = new UListElement();
-    pm.registeredCommands.forEach((cmd) {
+    var commands = (verbose) ? pm.verboseRegisteredCommands : pm.registeredCommands;
+    commands.forEach((cmd) {
       list.append(new LIElement()..text = cmd);
     });
     div.append(list);
 
-    if (pm.registeredCommands.length > 10) {
+    if (commands.length > 10) {
       div.className = '${CLI.VISIBLE_SCROLL} ${CLI.BORDERED_SCROLL_AREA}';
     }
 
@@ -96,7 +95,7 @@ University</p>""";
 
   void _displayCommandHelp(String command) {
     var processFactory =
-        new ProcessManager().registeredProcessFactories[command];
+        new ProcessManager().usableRegisteredProcessFactories[command];
 
     var div = new DivElement();
     div.append(new ParagraphElement()..innerHtml = "<b>$command</b>");
@@ -109,6 +108,7 @@ University</p>""";
   _parseArgs() {
     var pm = new ProcessManager();
     var foundListParam = false;
+    var foundVerboseParam = false;
     var commandsForWhichHelpWasRequested = new Set();
 
     for (var i = 0; i < args.length; i++) {
@@ -117,7 +117,11 @@ University</p>""";
         foundListParam = true;
         continue;
       }
-      if (pm.registeredCommands.contains(arg)) {
+      if (arg == "-v" || arg == "--verbose") {
+        foundVerboseParam = true;
+        continue;
+      }
+      if (pm.usableRegisteredProcessFactories.keys.contains(arg)) {
         commandsForWhichHelpWasRequested.add(arg);
         continue;
       }
@@ -127,7 +131,7 @@ University</p>""";
     }
 
     if (foundListParam) {
-      _listCommands();
+      _listCommands(foundVerboseParam);
     }
     commandsForWhichHelpWasRequested.forEach((cmd) {
       _displayCommandHelp(cmd);

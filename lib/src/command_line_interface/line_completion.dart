@@ -10,7 +10,7 @@ class LineCompletion {
   /// Completes a partial command typed into the shell.
   static void completeCommand(String command) {
     var matches = [];
-    cli.processManager.registeredCommands.forEach((pmCommand) {
+    cli.processManager.verboseRegisteredCommands.forEach((pmCommand) {
       if (pmCommand.startsWith(command)) {
         matches.add(pmCommand);
       }

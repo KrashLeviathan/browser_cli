@@ -9,7 +9,7 @@ CommandLineInterface interface;
 void main() {
   interface = new CommandLineInterface();
   _registerProcesses();
-  interface.processManager.startProcess(LoadCookiesProcessFactory.COMMAND);
+  interface.processManager.startProcess(LoadCookiesProcessFactory.COMMAND, programmaticOnly: true);
 }
 
 _registerProcesses() {

@@ -19,12 +19,30 @@ abstract class ProcessFactory {
   /// exit(int) call manually.
   final bool autoExit;
 
+  /// Determines how accessible the process command is to the user.
+  final ProcessAccessibility accessibility;
+
   ProcessFactory(
       this.command, this.usage, this.shortDescription, this.longDescription,
-      [this.autoExit = true]);
+      [this.autoExit = true, this.accessibility = ProcessAccessibility.VISIBLE]);
 
   /// Starts a [Process] of a concrete type with the given id and arguments.
   Process createProcess(int id, List args);
+}
+
+/// Determines how accessible the process command is to the user. Visibility
+/// refers to whether it gets listed with the `help --list` command. Usability
+/// refers to whether the user can type the command into the CLI to run the
+/// process.
+enum ProcessAccessibility {
+  /// Visible. Usable.
+  VISIBLE,
+  /// Only visible if listed verbosely. Usable.
+  VERBOSE_VISIBLE,
+  /// Invisible. Usable.
+  HIDDEN_USABLE,
+  /// Invisible. Not usable in the CLI. (Can only be called programmatically.)
+  PROGRAMMATIC_USABLE
 }
 
 /// A [Process] is something that runs in the shell. It gets started with a

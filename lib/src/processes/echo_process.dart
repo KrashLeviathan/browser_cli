@@ -15,7 +15,7 @@ class EchoProcessFactory extends ProcessFactory {
       'Prints the supplied input back to the shell';
 
   EchoProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true, ProcessAccessibility.VERBOSE_VISIBLE);
 
   EchoProcess createProcess(int id, List args) =>
       new EchoProcess(id, COMMAND, args, this);

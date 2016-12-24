@@ -65,23 +65,39 @@ class ProcessManager {
   Map<int, StreamSubscription> _inputRequestStreamSubscriptions = new Map();
   Queue<int> _inputRequestStack = new Queue();
 
-  /// A [List] of all commands that have been registered with the
+  /// A [List] of all visible commands that have been registered with the
   /// [ProcessManager].
-  List<String> get registeredCommands => _registeredProcessFactories.keys;
+  List<String> get registeredCommands => _registeredProcessFactories.keys.where((key) =>
+    _registeredProcessFactories[key].accessibility == ProcessAccessibility.VISIBLE);
+
+  /// A [List] of all visible or hidden commands that have been registered with
+  /// the [ProcessManager].
+  List<String> get verboseRegisteredCommands => _registeredProcessFactories.keys.where((key) =>
+  _registeredProcessFactories[key].accessibility == ProcessAccessibility.VISIBLE || _registeredProcessFactories[key].accessibility == ProcessAccessibility.VERBOSE_VISIBLE);
 
   /// A [Map] of all [ProcessFactory] objects that have been registered with
   /// the [ProcessManager]. The keys in the map are the command names.
-  Map<String, ProcessFactory> get registeredProcessFactories =>
-      _registeredProcessFactories;
+  Map<String, ProcessFactory> get usableRegisteredProcessFactories {
+    var usableFactories = new Map<String, ProcessFactory>();
+    _registeredProcessFactories.keys.forEach((key) {
+      if (_registeredProcessFactories[key].accessibility != ProcessAccessibility.PROGRAMMATIC_USABLE) {
+        usableFactories[key] = _registeredProcessFactories[key];
+      }
+    });
+    return usableFactories;
+  }
   Map<String, ProcessFactory> _registeredProcessFactories = new Map();
 
   /// Starts a process in the shell.
-  bool startProcess(String command, {List args}) {
+  /// If the process can only be started programmatically, make sure to set
+  /// the `programmaticOnly` parameter to `true`, otherwise it will only
+  /// recognize "usable" commands.
+  bool startProcess(String command, {List args, bool programmaticOnly: false}) {
     try {
       var id = _generateId();
       var arguments = args ?? [];
-      var process =
-          _registeredProcessFactories[command]?.createProcess(id, arguments);
+      var process = (programmaticOnly) ? _registeredProcessFactories[command]?.createProcess(id, arguments) :
+          usableRegisteredProcessFactories[command]?.createProcess(id, arguments);
       if (process == null) {
         var supplementaryInput = utils.supplementaryCommandMappings[command];
         if (supplementaryInput == null) {

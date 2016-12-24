@@ -15,7 +15,7 @@ class LoadCookiesProcessFactory extends ProcessFactory {
       'cookies.';
 
   LoadCookiesProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true, ProcessAccessibility.PROGRAMMATIC_USABLE);
 
   LoadCookiesProcess createProcess(int id, List args) =>
       new LoadCookiesProcess(id, COMMAND, args, this);
