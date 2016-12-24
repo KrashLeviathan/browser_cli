@@ -3,6 +3,7 @@ library process.help;
 import 'dart:async';
 import 'dart:html';
 
+import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/process_manager.dart';
 import 'package:browser_cli/utils.dart';
 
@@ -19,7 +20,8 @@ class HelpProcessFactory extends ProcessFactory {
       'Typing `help <command>` will give help information about a command.';
 
   HelpProcessFactory()
-      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION);
+      : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true,
+            ProcessAccessibility.VERBOSE_VISIBLE);
 
   HelpProcess createProcess(int id, List args) =>
       new HelpProcess(id, COMMAND, args, this);
@@ -43,7 +45,9 @@ class HelpProcess extends Process {
 <p>You are using <b style='color: #9ccc7f; font-size: larger;'>browser_cli</b>,
 a command line interface that runs in the browser!
 To see a list of available commands, type <b>`help --list`</b> or <b>`commands`
-</b>. To see help about any command, type <b>`help &lt;command&gt;`</b>.</p>
+</b>. To see help about any command, type <b>`help &lt;command&gt;`</b>. Most
+system commands are "hidden" and will only be listed if the verbose flag is
+passed. (<b>`help -l -v`</b>).</p>
 
 <p>A few helpful features you should know about:</p>
 <ul>
@@ -109,6 +113,7 @@ University</p>""";
 
   _parseArgs() {
     var pm = new ProcessManager();
+    var ev = new EnvVars();
     var foundListParam = false;
     var foundVerboseParam = false;
     var commandsForWhichHelpWasRequested = new Set();
@@ -128,7 +133,7 @@ University</p>""";
         commandsForWhichHelpWasRequested.add(arg);
         continue;
       }
-      if (pm.aliasMappings.containsKey(arg)) {
+      if (ev.aliasMappings.containsKey(arg)) {
         aliasesForWhichHelpWasRequested.add(arg);
         continue;
       }
@@ -146,7 +151,7 @@ University</p>""";
     aliasesForWhichHelpWasRequested.forEach((alias) {
       output(new DivElement()
         ..setInnerHtml(
-            "<b>$alias</b> is an alias for <b>${pm.aliasMappings[alias]}</b>"));
+            "<b>$alias</b> is an alias for <b>${ev.aliasMappings[alias]}</b>"));
     });
   }
 }

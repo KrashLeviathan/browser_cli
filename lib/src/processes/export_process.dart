@@ -66,6 +66,8 @@ class ExportProcess extends Process {
 
   _exportAlias() {
     new ProcessManager().startProcess('alias', args: args.sublist(1));
-    // TODO: Save to cookies
+    new Timer(Duration.ZERO, () {
+      new EnvVars().exportAlias(AliasProcessFactory.lastAliasAdded);
+    });
   }
 }

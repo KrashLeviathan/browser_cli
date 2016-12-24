@@ -12,6 +12,7 @@ import 'dart:collection';
 import 'dart:html';
 import 'dart:math' show Random;
 
+import 'package:browser_cli/environment_variables.dart';
 import 'package:browser_cli/utils.dart' as utils;
 
 part 'src/process_manager/process.dart';
@@ -96,10 +97,6 @@ class ProcessManager {
 
   Map<String, ProcessFactory> _registeredProcessFactories = new Map();
 
-  /// These mappings store process command aliases.
-  /// Example: if the user types in `commands` it will actually run `help -l`.
-  Map<String, String> aliasMappings = {'?': 'help', 'commands': 'help -l'};
-
   /// Starts a process in the shell.
   /// If the process can only be started programmatically, make sure to set
   /// the `programmaticOnly` parameter to `true`, otherwise it will only
@@ -113,7 +110,7 @@ class ProcessManager {
           : usableRegisteredProcessFactories[command]
               ?.createProcess(id, arguments);
       if (process == null) {
-        var alias = aliasMappings[command];
+        var alias = new EnvVars().aliasMappings[command];
         if (alias == null) {
           throw new Exception('$command: command not found');
         }

@@ -18,6 +18,10 @@ class EnvVars {
   Map<String, String> _persistingVariables = new Map();
   Map<String, String> _tempVariables = new Map();
 
+  /// These mappings store process command aliases.
+  /// Example: if the user types in `commands` it will actually run `help -l`.
+  Map<String, String> aliasMappings = {'?': 'help', 'commands': 'help -l'};
+
   /// A regular expression for matching environment variable assignment.
   /// Ex: myVar=something
   ///     myOtherVar="something else"
@@ -32,6 +36,9 @@ class EnvVars {
 
   /// The prefix to all cookie names
   static const cookiePrefix = "browser_cli_";
+
+  /// The additional prefix to all alias names
+  static const aliasPrefix = "alias_";
 
   EnvVars._internal() {
     _envVarsSingleton = this;
@@ -83,11 +90,36 @@ class EnvVars {
     }
   }
 
+  /// Adds an alias to the cookies (making it persistent across sessions).
+  void exportAlias(String aliasName) {
+    document.cookie =
+        "$cookiePrefix$aliasPrefix$aliasName=${aliasMappings[aliasName]}";
+  }
+
+  /// Removes `aliasName` from the environment aliases.
+  /// Returns `false` if unsuccessful (the aliasName didn't exist), otherwise
+  /// returns `true`.
+  bool unsetAlias(String aliasName) {
+    if (aliasMappings.containsKey(aliasName)) {
+      aliasMappings.remove(aliasName);
+      document.cookie =
+          "$cookiePrefix$aliasPrefix$aliasName=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /// Loads variables that were previously stored in the document cookies.
   void loadFromCookies() {
     var cookies = document.cookie.split('; ');
     cookies.forEach((cookie) {
-      if (cookie.startsWith(cookiePrefix)) {
+      if (cookie.startsWith("$cookiePrefix$aliasPrefix")) {
+        var kvPair = cookie
+            .substring(cookiePrefix.length + aliasPrefix.length)
+            .split('=');
+        aliasMappings[kvPair[0]] = kvPair[1];
+      } else if (cookie.startsWith(cookiePrefix)) {
         var kvPair = cookie.substring(cookiePrefix.length).split('=');
         _persistingVariables[kvPair[0]] = kvPair[1];
       }
@@ -100,6 +132,11 @@ class EnvVars {
   static bool variableGetsAssigned(String input, {bool persist: false}) {
     if (assignmentRegExp.hasMatch(input)) {
       assignmentRegExp.allMatches(input).forEach((match) {
+        if (match.group(1) == 'alias' || match.group(1) == aliasPrefix) {
+          // Can't assign a variable named alias or alias_
+          print("You can't assign a variable named `alias` or `alias_`!");
+          return false;
+        }
         if (_envVarsSingleton._persistingVariables.keys
             .contains(match.group(1))) {
           persist = true;

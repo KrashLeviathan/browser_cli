@@ -49,11 +49,11 @@ class AliasProcess extends Process {
   }
 
   _parseArgs() {
-    var pm = new ProcessManager();
     var combinedArgs = args.join(' ');
     if (EnvVars.assignmentRegExp.hasMatch(combinedArgs)) {
       EnvVars.assignmentRegExp.allMatches(combinedArgs).forEach((match) {
-        pm.aliasMappings[match.group(1)] = trimAndStripQuotes(match.group(2));
+        new EnvVars().aliasMappings[match.group(1)] =
+            trimAndStripQuotes(match.group(2));
         AliasProcessFactory._lastAliasAdded = match.group(1);
       });
     } else {

@@ -16,7 +16,7 @@ class LineCompletion {
       }
     });
 
-    cli.processManager.aliasMappings.keys.forEach((suppCommand) {
+    new EnvVars().aliasMappings.keys.forEach((suppCommand) {
       if (suppCommand.startsWith(command)) {
         matches.add(suppCommand);
       }
