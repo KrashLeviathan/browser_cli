@@ -112,6 +112,7 @@ University</p>""";
     var foundListParam = false;
     var foundVerboseParam = false;
     var commandsForWhichHelpWasRequested = new Set();
+    var aliasesForWhichHelpWasRequested = new Set();
 
     for (var i = 0; i < args.length; i++) {
       var arg = args[i];
@@ -123,8 +124,12 @@ University</p>""";
         foundVerboseParam = true;
         continue;
       }
-      if (pm.usableRegisteredProcessFactories.keys.contains(arg)) {
+      if (pm.usableRegisteredProcessFactories.containsKey(arg)) {
         commandsForWhichHelpWasRequested.add(arg);
+        continue;
+      }
+      if (pm.aliasMappings.containsKey(arg)) {
+        aliasesForWhichHelpWasRequested.add(arg);
         continue;
       }
       // Found something that shouldn't be there.
@@ -137,6 +142,11 @@ University</p>""";
     }
     commandsForWhichHelpWasRequested.forEach((cmd) {
       _displayCommandHelp(cmd);
+    });
+    aliasesForWhichHelpWasRequested.forEach((alias) {
+      output(new DivElement()
+        ..setInnerHtml(
+            "<b>$alias</b> is an alias for <b>${pm.aliasMappings[alias]}</b>"));
     });
   }
 }

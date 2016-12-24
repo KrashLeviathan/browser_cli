@@ -119,7 +119,6 @@ class ProcessManager {
         }
         var parsedSuppInput =
             new utils.ParsedInput.fromString(alias + " " + args.join(" "));
-        print(parsedSuppInput);
         process = _registeredProcessFactories[parsedSuppInput.command]
             ?.createProcess(id, parsedSuppInput.args);
       }

@@ -90,6 +90,7 @@ void main() {
 _registerProcesses() {
   interface.processManager.registerProcessFactories([
     new LoadCookiesProcessFactory(),
+    new AliasProcessFactory(),
     new ClearProcessFactory(),
     new EchoProcessFactory(),
     new ExportProcessFactory(),
