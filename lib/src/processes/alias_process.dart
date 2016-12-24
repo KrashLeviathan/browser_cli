@@ -18,6 +18,8 @@ class AliasProcessFactory extends ProcessFactory {
       'alias is typed. For example, one of the built-in aliases is `commands`, '
       'which is an alias for `help -l`. If you type in `commands -v`, it will '
       'be the same as if you had typed in `help -l -v`.';
+  static String get lastAliasAdded => _lastAliasAdded;
+  static String _lastAliasAdded;
 
   AliasProcessFactory()
       : super(COMMAND, USAGE, SHORT_DESCRIPTION, LONG_DESCRIPTION, true,
@@ -52,6 +54,7 @@ class AliasProcess extends Process {
     if (EnvVars.assignmentRegExp.hasMatch(combinedArgs)) {
       EnvVars.assignmentRegExp.allMatches(combinedArgs).forEach((match) {
         pm.aliasMappings[match.group(1)] = trimAndStripQuotes(match.group(2));
+        AliasProcessFactory._lastAliasAdded = match.group(1);
       });
     } else {
       // Found something that shouldn't be there.
