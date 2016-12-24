@@ -34,11 +34,3 @@ String trimAndStripQuotes(String str) {
     return trimmed;
   }
 }
-
-// TODO: Alias system
-/// These mappings create some useful aliases for other commands until a
-/// better system for aliases is put in place.
-final Map<String, String> supplementaryCommandMappings = {
-  '?': 'help',
-  'commands': 'help -l'
-};

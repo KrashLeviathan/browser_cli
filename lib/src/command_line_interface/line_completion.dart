@@ -16,7 +16,7 @@ class LineCompletion {
       }
     });
 
-    supplementaryCommandMappings.keys.forEach((suppCommand) {
+    cli.processManager.aliasMappings.keys.forEach((suppCommand) {
       if (suppCommand.startsWith(command)) {
         matches.add(suppCommand);
       }
